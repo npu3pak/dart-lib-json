@@ -61,8 +61,8 @@ class Json {
 
   // List
 
-  List<Json> getList(String key) {
-    final list = List<Map<String, dynamic>>.from(content[key]);
+  List<Json> get list {
+    final list = List<dynamic>.from(raw);
     return list.map((jsonItem) => Json(jsonItem)).toList();
   }
 }

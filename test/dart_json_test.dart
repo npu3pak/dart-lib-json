@@ -46,4 +46,12 @@ void main() {
     assert(json["nullKey"].intValue == null);
   });
 
+  test('list get', () {
+    final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
+    final list = json.list;
+    assert(list.length == 2);
+    assert(list[0]["name"].stringValue == "John");
+    assert(list[1]["name"].stringValue == "Jack");
+  });
+
 }
