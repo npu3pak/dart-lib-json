@@ -9,7 +9,22 @@ class Json {
   Json(this.raw);
 
   Json.fromString(String value) {
-    this.raw = jsonDecode(value);
+    raw = jsonDecode(value);
+  }
+
+  Json.object() {
+    final Map<String, dynamic> empty = {};
+    raw = empty;
+  }
+
+  String toString() {
+    return jsonEncode(raw, toEncodable: (value) {
+      if (value is Json) {
+        return value.raw;
+      } else {
+        return value;
+      }
+    });
   }
 
   // Dynamic

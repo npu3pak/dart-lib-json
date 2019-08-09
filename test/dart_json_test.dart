@@ -30,7 +30,7 @@ void main() {
   });
 
   test('map set', () {
-    final json = Json.fromString('{}');
+    final json = Json.object();
     json["intKey"].intValue = 1;
     json["strKey"].stringValue = "str";
     json["nullKey"].stringValue = null;
@@ -52,6 +52,33 @@ void main() {
     assert(list.length == 2);
     assert(list[0]["name"].stringValue == "John");
     assert(list[1]["name"].stringValue == "Jack");
+  });
+
+  test('unformatted string conversion', () {
+    final originalStr = '[{"name":"John"},{"name":"Jack"}]';
+    final json = Json.fromString(originalStr);
+    final restoredStr = json.toString();
+    assert(originalStr == restoredStr);
+  });
+
+  test('json object to string', () {
+    final json = Json.object();
+    json["intKey"].intValue = 1;
+    json["strKey"].stringValue = "str";
+    json["nullKey"].stringValue = null;
+    final restoredStr = json.toString();
+    assert(restoredStr == '{"intKey":1,"strKey":"str","nullKey":null}');
+  });
+
+  test('json with nested object to string', () {
+    final json = Json.object();
+    json["nested"] = Json.object();
+    json["nested"]["value"].stringValue = "str";
+    json["nested"]["nested"] = Json.object();
+    json["nested"]["nested"]["value"].stringValue = "str";
+
+    final restoredStr = json.toString();
+    assert(restoredStr == '{"nested":{"value":"str","nested":{"value":"str"}}}');
   });
 
 }
