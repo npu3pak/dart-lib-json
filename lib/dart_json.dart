@@ -61,7 +61,7 @@ class Json {
         return Json(raw[key]);
       }
     } else {
-      map[key] = Json(null);
+      map[key] = Json.object();
       return map[key];
     }
   }

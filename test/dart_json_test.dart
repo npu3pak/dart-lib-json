@@ -72,13 +72,19 @@ void main() {
 
   test('json with nested object to string', () {
     final json = Json.object();
-    json["nested"] = Json.object();
+    json["value"].stringValue = "str";
     json["nested"]["value"].stringValue = "str";
-    json["nested"]["nested"] = Json.object();
     json["nested"]["nested"]["value"].stringValue = "str";
 
     final restoredStr = json.toString();
-    assert(restoredStr == '{"nested":{"value":"str","nested":{"value":"str"}}}');
+    assert(restoredStr == '{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}');
+  });
+
+  test('simple value to string', () {
+    final json = Json(1);
+    assert(json.intValue == 1);
+    final restoredStr = json.toString();
+    assert(restoredStr == '1');
   });
 
 }
