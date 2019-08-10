@@ -3,62 +3,135 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_json/dart_json.dart';
 
 void main() {
-  test('intValue', () {
-    final json = Json.fromString("1");
-    assert(json.intValue == 1);
+  group('intValue', () {
+    test('.fromString() value', () {
+      final json = Json.fromString("1");
+  
+      expect(json.intValue, equals(1));
+    });
 
-    json.intValue = 2;
-    assert(json.intValue == 2);
+    test('.fromString null', () {
+      final json = Json.fromString("null");
 
-    json.intValue = null;
-    assert(json.intValue == null);
+      expect(json.intValue, isNull);
+    });
 
-    assert(Json.fromString("null").intValue == null);
+    test('assigned value', () {
+      final json = Json.fromString("1");
+      json.intValue = 2;
+
+      expect(json.intValue, equals(2));
+    });
+
+    test('assigned null', () {
+      final json = Json.fromString("1");
+      json.intValue = null;
+
+      expect(json.intValue, isNull);
+    });
   });
 
-  test('dynamicValue', () {
-    final json = Json.fromString("1");
-    assert(json.dynamicValue == 1);
+  group('dynamicValue', () {
+    test('.fromString() value', () {
+      final json = Json.fromString("1");
 
-    json.dynamicValue = 2;
-    assert(json.dynamicValue == 2);
+      expect(json.dynamicValue, equals(1));
+    });
 
-    json.dynamicValue = null;
-    assert(json.dynamicValue == null);
+    test('.fromString() null', () {
+      final json = Json.fromString("null");
 
-    assert(Json.fromString("null").dynamicValue == null);
+      expect(json.dynamicValue, isNull);
+    });
+
+    test('assigned value', () {
+      final json = Json.fromString("1");
+      json.dynamicValue = 2;
+
+      expect(json.dynamicValue, equals(2));
+    });
+
+    test('assigned null', () {
+      final json = Json.fromString("1");
+      json.dynamicValue = null;
+
+      expect(json.dynamicValue, isNull);
+    });
   });
 
-  test('map set', () {
-    final json = Json.object();
-    json["intKey"].intValue = 1;
-    json["strKey"].stringValue = "str";
-    json["nullKey"].stringValue = null;
-    assert(json["intKey"].intValue == 1);
-    assert(json["strKey"].stringValue == "str");
-    assert(json["nullKey"].intValue == null);
+  group('map', () {
+    test('set values', () {
+      final json = Json.object();
+      json["intKey"].intValue = 1;
+      json["strKey"].stringValue = "str";
+      json["nullKey"].stringValue = null;
+
+      expect(json["intKey"].intValue, equals(1));
+      expect(json["strKey"].stringValue, equals("str"));
+      expect(json["nullKey"].intValue, isNull);
+    });
+
+    test('.fromString', () {
+      final json = Json.fromString('{"intKey": 1, "strKey": "str", "nullKey": null}');
+
+      expect(json["intKey"].intValue, equals(1));
+      expect(json["strKey"].stringValue, equals("str"));
+      expect(json["nullKey"].intValue, isNull);
+    });
   });
 
-  test('map get', () {
-    final json = Json.fromString('{"intKey": 1, "strKey": "str", "nullKey": null}');
-    assert(json["intKey"].intValue == 1);
-    assert(json["strKey"].stringValue == "str");
-    assert(json["nullKey"].intValue == null);
-  });
+  group('list', () {
+    test('.fromString', () {
+      final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
+      final list = json.list;
 
-  test('list get', () {
-    final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
-    final list = json.list;
-    assert(list.length == 2);
-    assert(list[0]["name"].stringValue == "John");
-    assert(list[1]["name"].stringValue == "Jack");
+      expect(list.length, equals(2));
+    });
+
+    test('get elements', () {
+      final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
+      final list = json.list;
+
+      expect(list[0]["name"].stringValue, equals("John"));
+      expect(list[1]["name"].stringValue, equals("Jack"));
+    });
+
+    test('set list', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+
+      expect(json["list"].list[0]["name"].stringValue, "John");
+      expect(json["list"].list[1]["name"].stringValue, "Jack");
+    });
+
+    test('toString', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+
+      expect(json.toString(), '{"list":[{"name":"John"},{"name":"Jack"}]}');
+    });
+
+    test('list constructor', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.list([item1, item2]);
+
+      expect(json.list[0]["name"].stringValue, "John");
+      expect(json.list[1]["name"].stringValue, "Jack");
+      expect(json.toString(), '[{"name":"John"},{"name":"Jack"}]');
+    });
   });
 
   test('unformatted string conversion', () {
     final originalStr = '[{"name":"John"},{"name":"Jack"}]';
     final json = Json.fromString(originalStr);
     final restoredStr = json.toString();
-    assert(originalStr == restoredStr);
+
+    expect(originalStr, equals(restoredStr));
   });
 
   test('json object to string', () {
@@ -67,24 +140,28 @@ void main() {
     json["strKey"].stringValue = "str";
     json["nullKey"].stringValue = null;
     final restoredStr = json.toString();
-    assert(restoredStr == '{"intKey":1,"strKey":"str","nullKey":null}');
+
+    expect(restoredStr, equals('{"intKey":1,"strKey":"str","nullKey":null}'));
   });
 
-  test('json with nested object to string', () {
-    final json = Json.object();
-    json["value"].stringValue = "str";
-    json["nested"]["value"].stringValue = "str";
-    json["nested"]["nested"]["value"].stringValue = "str";
 
-    final restoredStr = json.toString();
-    assert(restoredStr == '{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}');
-  });
+  group('toString', () {
+    test('json with nested object', () {
+      final json = Json.object();
+      json["value"].stringValue = "str";
+      json["nested"]["value"].stringValue = "str";
+      json["nested"]["nested"]["value"].stringValue = "str";
+      final restoredStr = json.toString();
 
-  test('simple value to string', () {
-    final json = Json(1);
-    assert(json.intValue == 1);
-    final restoredStr = json.toString();
-    assert(restoredStr == '1');
+      expect(restoredStr, equals('{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}'));
+    });
+
+    test('simple value', () {
+      final json = Json(1);
+      expect(json.intValue, equals(1));
+      final restoredStr = json.toString();
+      expect(restoredStr, equals('1'));
+    });
   });
 
 }
