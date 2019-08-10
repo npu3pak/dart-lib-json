@@ -6,7 +6,13 @@ class Json {
 
   dynamic raw;
 
-  Json(this.raw);
+  Json(raw) {
+    if (raw is Json) {
+      this.raw = raw.raw;
+    } else {
+      this.raw = raw;
+    }
+  }
 
   Json.fromString(String value) {
     raw = jsonDecode(value);
@@ -15,6 +21,10 @@ class Json {
   Json.object() {
     final Map<String, dynamic> empty = {};
     raw = empty;
+  }
+
+  Json.list(List<Json> items) {
+    raw = items;
   }
 
   String toString() {
@@ -74,10 +84,12 @@ class Json {
     raw[key] = value;
   }
 
-  // List
+// List
 
   List<Json> get list {
-    final list = List<dynamic>.from(raw);
+    final List<dynamic> list = raw;
     return list.map((jsonItem) => Json(jsonItem)).toList();
   }
+
+  set list(List<Json> value) => raw = value;
 }
