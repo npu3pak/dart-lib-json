@@ -95,6 +95,35 @@ void main() {
       expect(list[0]["name"].stringValue, equals("John"));
       expect(list[1]["name"].stringValue, equals("Jack"));
     });
+
+    test('set list', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+
+      expect(json["list"].list[0]["name"].stringValue, "John");
+      expect(json["list"].list[1]["name"].stringValue, "Jack");
+    });
+
+    test('toString', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+
+      expect(json.toString(), '{"list":[{"name":"John"},{"name":"Jack"}]}');
+    });
+
+    test('list constructor', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final json = Json.list([item1, item2]);
+
+      expect(json.list[0]["name"].stringValue, "John");
+      expect(json.list[1]["name"].stringValue, "Jack");
+      expect(json.toString(), '[{"name":"John"},{"name":"Jack"}]');
+    });
   });
 
   test('unformatted string conversion', () {
