@@ -3,6 +3,94 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_json/dart_json.dart';
 
 void main() {
+  group('init', () {
+    test('init with a simple value', () {
+      final nullJson = Json(null);
+      expect(nullJson.intValue, null);
+
+      final intJson = Json(1);
+      expect(intJson.intValue, 1);
+
+      final stringJson = Json("abc");
+      expect(stringJson.stringValue, "abc");
+
+      final doubleJson = Json(9.9);
+      expect(doubleJson.doubleValue, 9.9);
+
+      final boolJson = Json(true);
+      expect(boolJson.boolValue, true);
+    });
+
+    test('init with dictionary', () {
+      final j = Json({
+        "null": null,
+        "int": 1,
+        "string": "abc",
+        "double": 9.9,
+        "bool": true,
+        "inner1": {
+          "key1":"value1",
+          "inner2": {
+            "key2":"value2"
+          }
+        },
+        "list": [1,2]
+      });
+
+      expect(j["null"].intValue, null);
+      expect(j["int"].intValue, 1);
+      expect(j["string"].stringValue, "abc");
+      expect(j["double"].doubleValue, 9.9);
+      expect(j["bool"].boolValue, true);
+      expect(j["inner1"]["key1"].stringValue, "value1");
+      expect(j["inner1"]["inner2"]["key2"].stringValue, "value2");
+      expect(j["list"].list[0].intValue, 1);
+    });
+
+    test('init with json', () {
+      final source = Json({
+        "null": null,
+        "int": 1,
+        "string": "abc",
+        "double": 9.9,
+        "bool": true,
+        "inner1": {
+          "key1":"value1",
+          "inner2": {
+            "key2":"value2"
+          }
+        },
+        "list": [1,2]
+      });
+      final j = Json(source);
+
+      expect(j["null"].intValue, null);
+      expect(j["int"].intValue, 1);
+      expect(j["string"].stringValue, "abc");
+      expect(j["double"].doubleValue, 9.9);
+      expect(j["bool"].boolValue, true);
+      expect(j["inner1"]["key1"].stringValue, "value1");
+      expect(j["inner1"]["inner2"]["key2"].stringValue, "value2");
+      expect(j["list"].list[0].intValue, 1);
+    });
+
+    test('init with list of simple values', () {
+      final j = Json([1,2]);
+
+      expect(j.list[0].intValue, 1);
+      expect(j.list[1].intValue, 2);
+    });
+
+    test('init with list of json objects', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final j = Json([item1,item2]);
+
+      expect(j.list[0]["name"].stringValue, "John");
+      expect(j.list[1]["name"].stringValue, "Jack");
+    });
+  });
+  
   group('intValue', () {
     test('.fromString() value', () {
       final json = Json.fromString("1");
@@ -104,6 +192,21 @@ void main() {
 
       expect(json["list"].list[0]["name"].stringValue, "John");
       expect(json["list"].list[1]["name"].stringValue, "Jack");
+    });
+
+    test('list append', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final item3 = Json({"name":"Stan"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+      var list = json["list"].list;
+      json["list"].list.add(item3);
+      list.add(item3);
+
+      expect(json["list"].list[0]["name"].stringValue, "John");
+      expect(json["list"].list[1]["name"].stringValue, "Jack");
+      expect(json["list"].list[2]["name"].stringValue, "Stan");
     });
 
     test('toString', () {
