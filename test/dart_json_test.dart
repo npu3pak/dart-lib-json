@@ -143,6 +143,28 @@ void main() {
       final unformattedString = str.replaceAll(" ", "").replaceAll("\n", "");
       expect(j.asString(), unformattedString);
     });
+
+    test('asPrettyString', () {
+      final str = """{
+  "null": null,
+  "int": 1,
+  "string": "abc",
+  "double": 9.9,
+  "bool": true,
+  "inner1": {
+    "key1": "value1",
+    "inner2": {
+      "key2": "value2"
+    }
+  },
+  "list": [
+    1,
+    2
+  ]
+}""";
+      final j = Json.parse(str);
+      expect(j.asPrettyString(), equals(str));
+    });
   });
   
   group('intValue', () {

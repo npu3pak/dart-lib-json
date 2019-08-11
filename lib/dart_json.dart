@@ -85,13 +85,19 @@ class Json {
   Json.parse(String value): this(jsonDecode(value));
 
   String asString() {
-    return jsonEncode(_raw, toEncodable: (value) {
+    return asPrettyString(null);
+  }
+
+  String asPrettyString([String indent = '  ']) {
+    final encoder = JsonEncoder.withIndent(indent, (value) {
       if (value is Json) {
         return value._raw;
       } else {
         return value;
       }
     });
+
+    return encoder.convert(_raw);
   }
 
   // Dynamic
