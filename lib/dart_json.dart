@@ -102,11 +102,23 @@ class Json {
 
   set intValue(int value) => _raw = value;
 
+  // Double
+
+  double get doubleValue => _raw;
+
+  set doubleValue(double value) => _raw = value;
+
   // String
 
   String get stringValue => _raw;
 
   set stringValue(String value) => _raw = value;
+
+  // Bool
+
+  bool get boolValue => _raw;
+
+  set boolValue(bool value) => _raw = value;
 
   // Map
 
