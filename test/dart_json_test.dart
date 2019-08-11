@@ -91,6 +91,28 @@ void main() {
     });
   });
   
+  group('empty init', () {
+    test('init with null', () {
+      final j = Json.empty();
+
+      expect(j.stringValue, null);
+    });
+
+    test('init empty object', () {
+      final j = Json.object();
+      j["key"].stringValue = "value";
+
+      expect(j["key"].stringValue, "value");
+    });
+
+    test('init empty list', () {
+      final j = Json.list();
+      j.list.add(Json(1));
+
+      expect(j.list[0].intValue, 1);
+    });
+  });
+  
   group('intValue', () {
     test('.fromString() value', () {
       final json = Json.fromString("1");
@@ -221,7 +243,7 @@ void main() {
     test('list constructor', () {
       final item1 = Json({"name":"John"});
       final item2 = Json({"name":"Jack"});
-      final json = Json.list([item1, item2]);
+      final json = Json([item1, item2]);
 
       expect(json.list[0]["name"].stringValue, "John");
       expect(json.list[1]["name"].stringValue, "Jack");

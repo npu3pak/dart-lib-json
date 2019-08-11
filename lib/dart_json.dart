@@ -40,6 +40,8 @@ class Json {
   // Can be a simple value, a List<Json>, or a Map<String, Json>.
   dynamic _raw;
 
+  // Constructors
+
   Json(raw) {
     if (_isSupportedValueType(raw)) {
       this._raw = raw;
@@ -67,16 +69,20 @@ class Json {
       value is bool;
   }
 
-  Json.fromString(String value): this(jsonDecode(value));
+  Json.empty(): this(null);
 
   Json.object() {
     final Map<String, dynamic> empty = {};
     _raw = empty;
   }
 
-  Json.list(List<Json> items) {
-    _raw = items;
+  Json.list() {
+    _raw = List<Json>();
   }
+
+  // Serialization and deserialization
+
+  Json.fromString(String value): this(jsonDecode(value));
 
   String toString() {
     return jsonEncode(_raw, toEncodable: (value) {
