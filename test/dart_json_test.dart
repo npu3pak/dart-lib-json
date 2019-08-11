@@ -129,10 +129,6 @@ void main() {
         },
         "list": [1,2]
       }""";
-
-      final unformattedString = str.replaceAll(" ", "").replaceAll("\n", "");
-
-
       final j = Json.parse(str);
 
       expect(j["null"].intValue, null);
@@ -144,8 +140,8 @@ void main() {
       expect(j["inner1"]["inner2"]["key2"].stringValue, "value2");
       expect(j["list"].list[0].intValue, 1);
 
-      final generatedString = j.asString();
-      expect(generatedString, unformattedString);
+      final unformattedString = str.replaceAll(" ", "").replaceAll("\n", "");
+      expect(j.asString(), unformattedString);
     });
   });
   
