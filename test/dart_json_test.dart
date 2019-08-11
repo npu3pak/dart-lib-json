@@ -112,29 +112,61 @@ void main() {
       expect(j.list[0].intValue, 1);
     });
   });
+
+  group('serialization and deserialization', () {
+    test('parse and asString', () {
+      final str = """{
+        "null": null,
+        "int": 1,
+        "string": "abc",
+        "double": 9.9,
+        "bool": true,
+        "inner1": {
+          "key1":"value1",
+          "inner2": {
+            "key2":"value2"
+          }
+        },
+        "list": [1,2]
+      }""";
+      final j = Json.parse(str);
+
+      expect(j["null"].intValue, null);
+      expect(j["int"].intValue, 1);
+      expect(j["string"].stringValue, "abc");
+      expect(j["double"].doubleValue, 9.9);
+      expect(j["bool"].boolValue, true);
+      expect(j["inner1"]["key1"].stringValue, "value1");
+      expect(j["inner1"]["inner2"]["key2"].stringValue, "value2");
+      expect(j["list"].list[0].intValue, 1);
+
+      final unformattedString = str.replaceAll(" ", "").replaceAll("\n", "");
+      expect(j.asString(), unformattedString);
+    });
+  });
   
   group('intValue', () {
-    test('.fromString() value', () {
-      final json = Json.fromString("1");
+    test('.parse() value', () {
+      final json = Json.parse("1");
   
       expect(json.intValue, equals(1));
     });
 
-    test('.fromString null', () {
-      final json = Json.fromString("null");
+    test('.parse null', () {
+      final json = Json.parse("null");
 
       expect(json.intValue, isNull);
     });
 
     test('assigned value', () {
-      final json = Json.fromString("1");
+      final json = Json.parse("1");
       json.intValue = 2;
 
       expect(json.intValue, equals(2));
     });
 
     test('assigned null', () {
-      final json = Json.fromString("1");
+      final json = Json.parse("1");
       json.intValue = null;
 
       expect(json.intValue, isNull);
@@ -142,27 +174,27 @@ void main() {
   });
 
   group('dynamicValue', () {
-    test('.fromString() value', () {
-      final json = Json.fromString("1");
+    test('.parse() value', () {
+      final json = Json.parse("1");
 
       expect(json.dynamicValue, equals(1));
     });
 
-    test('.fromString() null', () {
-      final json = Json.fromString("null");
+    test('.parse() null', () {
+      final json = Json.parse("null");
 
       expect(json.dynamicValue, isNull);
     });
 
     test('assigned value', () {
-      final json = Json.fromString("1");
+      final json = Json.parse("1");
       json.dynamicValue = 2;
 
       expect(json.dynamicValue, equals(2));
     });
 
     test('assigned null', () {
-      final json = Json.fromString("1");
+      final json = Json.parse("1");
       json.dynamicValue = null;
 
       expect(json.dynamicValue, isNull);
@@ -181,8 +213,8 @@ void main() {
       expect(json["nullKey"].intValue, isNull);
     });
 
-    test('.fromString', () {
-      final json = Json.fromString('{"intKey": 1, "strKey": "str", "nullKey": null}');
+    test('.parse', () {
+      final json = Json.parse('{"intKey": 1, "strKey": "str", "nullKey": null}');
 
       expect(json["intKey"].intValue, equals(1));
       expect(json["strKey"].stringValue, equals("str"));
@@ -191,15 +223,15 @@ void main() {
   });
 
   group('list', () {
-    test('.fromString', () {
-      final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
+    test('.parse', () {
+      final json = Json.parse('[{"name": "John"},{"name": "Jack"}]');
       final list = json.list;
 
       expect(list.length, equals(2));
     });
 
     test('get elements', () {
-      final json = Json.fromString('[{"name": "John"},{"name": "Jack"}]');
+      final json = Json.parse('[{"name": "John"},{"name": "Jack"}]');
       final list = json.list;
 
       expect(list[0]["name"].stringValue, equals("John"));
@@ -231,13 +263,13 @@ void main() {
       expect(json["list"].list[2]["name"].stringValue, "Stan");
     });
 
-    test('toString', () {
+    test('asString', () {
       final item1 = Json({"name":"John"});
       final item2 = Json({"name":"Jack"});
       final json = Json.object();
       json["list"].list = [item1, item2];
 
-      expect(json.toString(), '{"list":[{"name":"John"},{"name":"Jack"}]}');
+      expect(json.asString(), '{"list":[{"name":"John"},{"name":"Jack"}]}');
     });
 
     test('list constructor', () {
@@ -247,14 +279,14 @@ void main() {
 
       expect(json.list[0]["name"].stringValue, "John");
       expect(json.list[1]["name"].stringValue, "Jack");
-      expect(json.toString(), '[{"name":"John"},{"name":"Jack"}]');
+      expect(json.asString(), '[{"name":"John"},{"name":"Jack"}]');
     });
   });
 
   test('unformatted string conversion', () {
     final originalStr = '[{"name":"John"},{"name":"Jack"}]';
-    final json = Json.fromString(originalStr);
-    final restoredStr = json.toString();
+    final json = Json.parse(originalStr);
+    final restoredStr = json.asString();
 
     expect(originalStr, equals(restoredStr));
   });
@@ -264,19 +296,19 @@ void main() {
     json["intKey"].intValue = 1;
     json["strKey"].stringValue = "str";
     json["nullKey"].stringValue = null;
-    final restoredStr = json.toString();
+    final restoredStr = json.asString();
 
     expect(restoredStr, equals('{"intKey":1,"strKey":"str","nullKey":null}'));
   });
 
 
-  group('toString', () {
+  group('asString', () {
     test('json with nested object', () {
       final json = Json.object();
       json["value"].stringValue = "str";
       json["nested"]["value"].stringValue = "str";
       json["nested"]["nested"]["value"].stringValue = "str";
-      final restoredStr = json.toString();
+      final restoredStr = json.asString();
 
       expect(restoredStr, equals('{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}'));
     });
@@ -284,7 +316,7 @@ void main() {
     test('simple value', () {
       final json = Json(1);
       expect(json.intValue, equals(1));
-      final restoredStr = json.toString();
+      final restoredStr = json.asString();
       expect(restoredStr, equals('1'));
     });
   });

@@ -82,9 +82,9 @@ class Json {
 
   // Serialization and deserialization
 
-  Json.fromString(String value): this(jsonDecode(value));
+  Json.parse(String value): this(jsonDecode(value));
 
-  String toString() {
+  String asString() {
     return jsonEncode(_raw, toEncodable: (value) {
       if (value is Json) {
         return value._raw;
