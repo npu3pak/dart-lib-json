@@ -2,35 +2,86 @@ library dart_json;
 
 import 'dart:convert';
 
+class JsonException implements Exception {
+
+  String _message;
+  Exception _cause;
+
+  JsonException.invalidJson([Exception cause]):
+      _message = "Invalid JSON.",
+      _cause = cause;
+
+  JsonException.unsupportedType(dynamic value):
+      _message = "Unsupported type ${value.runtimeType}.";
+
+  JsonException.wrongTypeOfItem(dynamic value, String reason):
+      _message = "Wrong type of item ${value.runtimeType}. $reason";
+
+  JsonException.arrayOutOfBounds(int index, Exception cause):
+      _message = "Array index $index out of bounds",
+      _cause = cause;
+
+  JsonException.dictionaryKeyNotExist(String key, Exception cause):
+      _message = "Dictionary key $key not exist",
+      _cause = cause;
+
+  @override
+  String toString() {
+    if (_cause != null) {
+      return _message + "\n" + _cause.toString();
+    } else {
+      return _message;
+    }
+  }
+}
+
 class Json {
 
-  dynamic raw;
+  // Can be a simple value, a List<Json>, or a Map<String, Json>.
+  dynamic _raw;
 
   Json(raw) {
-    if (raw is Json) {
-      this.raw = raw.raw;
+    if (_isSupportedValueType(raw)) {
+      this._raw = raw;
+    } else if (raw is Json) {
+      this._raw = raw._raw;
+    } else if (raw is Map<String, dynamic>) {
+      final Map<String, dynamic> map = raw;
+      this._raw = map.map((k,v) => MapEntry(k,Json(v)));
+    } else if (raw is List<Json>) {
+      this._raw = raw;
+    } else if (raw is List<dynamic>) {
+      final List<dynamic> list = raw;
+      this._raw = list.map((v) => Json(v)).toList();
     } else {
-      this.raw = raw;
+      throw JsonException.unsupportedType(raw);
     }
   }
 
-  Json.fromString(String value) {
-    raw = jsonDecode(value);
+  bool _isSupportedValueType(dynamic value) {
+    return value == null ||
+      value is String ||
+      value is num ||
+      value is int ||
+      value is double ||
+      value is bool;
   }
+
+  Json.fromString(String value): this(jsonDecode(value));
 
   Json.object() {
     final Map<String, dynamic> empty = {};
-    raw = empty;
+    _raw = empty;
   }
 
   Json.list(List<Json> items) {
-    raw = items;
+    _raw = items;
   }
 
   String toString() {
-    return jsonEncode(raw, toEncodable: (value) {
+    return jsonEncode(_raw, toEncodable: (value) {
       if (value is Json) {
-        return value.raw;
+        return value._raw;
       } else {
         return value;
       }
@@ -39,36 +90,38 @@ class Json {
 
   // Dynamic
 
-  dynamic get dynamicValue => raw;
+  // ignore: unnecessary_getters_setters
+  dynamic get dynamicValue => _raw;
 
-  set dynamicValue(dynamic value) => raw = value;
+  // ignore: unnecessary_getters_setters
+  set dynamicValue(dynamic value) => _raw = value;
 
   // Int
 
-  int get intValue => raw;
+  int get intValue => _raw;
 
-  set intValue(int value) => raw = value;
+  set intValue(int value) => _raw = value;
 
   // String
 
-  String get stringValue => raw;
+  String get stringValue => _raw;
 
-  set stringValue(String value) => raw = value;
+  set stringValue(String value) => _raw = value;
 
   // Map
 
   Json operator [](String key) {
-    if (raw is Map<String, dynamic> == false) {
+    if (_raw is Map<String, dynamic> == false) {
       throw Exception();
     }
 
-    Map<String, dynamic> map = raw;
+    Map<String, dynamic> map = _raw;
     if (map.containsKey(key)){
-      final value = raw[key];
+      final value = _raw[key];
       if (value is Json) {
         return value;
       } else {
-        return Json(raw[key]);
+        return Json(_raw[key]);
       }
     } else {
       map[key] = Json.object();
@@ -77,19 +130,22 @@ class Json {
   }
 
   void operator []=(String key, Json value) {
-    if (raw is Map<String, dynamic> == false) {
+    if (_raw is Map<String, dynamic> == false) {
       throw Exception();
     }
 
-    raw[key] = value;
+    _raw[key] = value;
   }
 
 // List
 
   List<Json> get list {
-    final List<dynamic> list = raw;
-    return list.map((jsonItem) => Json(jsonItem)).toList();
+    if (_raw is List<Json>) {
+      return _raw;
+    } else {
+      throw Exception();
+    }
   }
 
-  set list(List<Json> value) => raw = value;
+  set list(List<Json> value) => _raw = value;
 }

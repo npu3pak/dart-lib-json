@@ -106,6 +106,21 @@ void main() {
       expect(json["list"].list[1]["name"].stringValue, "Jack");
     });
 
+    test('list append', () {
+      final item1 = Json({"name":"John"});
+      final item2 = Json({"name":"Jack"});
+      final item3 = Json({"name":"Stan"});
+      final json = Json.object();
+      json["list"].list = [item1, item2];
+      var list = json["list"].list;
+      json["list"].list.add(item3);
+      list.add(item3);
+
+      expect(json["list"].list[0]["name"].stringValue, "John");
+      expect(json["list"].list[1]["name"].stringValue, "Jack");
+      expect(json["list"].list[2]["name"].stringValue, "Stan");
+    });
+
     test('toString', () {
       final item1 = Json({"name":"John"});
       final item2 = Json({"name":"Jack"});
