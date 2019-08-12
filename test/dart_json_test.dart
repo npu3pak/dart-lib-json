@@ -171,8 +171,8 @@ void main() {
     test('set object values', () {
       final j = Json.object();
       j["k"].stringValue = "v";
-      j["list"].list = [Json(1), Json(2)];
-      j["nested"]["nestedList"].list = [Json(1), Json(2)];
+      j["list"] = Json([1,2]);
+      j["nested"]["nestedList"] = Json([Json(1),Json(2)]);
 
       expect(j.asString(), '{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
     });
@@ -183,6 +183,20 @@ void main() {
       expect(j["k"].stringValue, "v");
       expect(j["list"].list[0].intValue, 1);
       expect(j["nested"]["nestedList"].list[0].intValue, 1);
+    });
+  });
+
+  group('working with arrays', () {
+    test('working with arrays', () {
+      final str = '[1,2,3]';
+      final j = Json.parse(str);
+      expect(j.list[0].intValue, 1);
+
+      j.list.add(Json(4));
+      expect(j.list[3].intValue, 4);
+
+      j.list[3] = Json(5);
+      expect(j.list[3].intValue, 5);
     });
   });
   
@@ -283,7 +297,7 @@ void main() {
       final item1 = Json({"name":"John"});
       final item2 = Json({"name":"Jack"});
       final json = Json.object();
-      json["list"].list = [item1, item2];
+      json["list"] = Json([item1, item2]);
 
       expect(json["list"].list[0]["name"].stringValue, "John");
       expect(json["list"].list[1]["name"].stringValue, "Jack");
@@ -294,7 +308,7 @@ void main() {
       final item2 = Json({"name":"Jack"});
       final item3 = Json({"name":"Stan"});
       final json = Json.object();
-      json["list"].list = [item1, item2];
+      json["list"] = Json([item1, item2]);
       var list = json["list"].list;
       json["list"].list.add(item3);
       list.add(item3);
@@ -308,7 +322,7 @@ void main() {
       final item1 = Json({"name":"John"});
       final item2 = Json({"name":"Jack"});
       final json = Json.object();
-      json["list"].list = [item1, item2];
+      json["list"] = Json([item1, item2]);
 
       expect(json.asString(), '{"list":[{"name":"John"},{"name":"Jack"}]}');
     });
