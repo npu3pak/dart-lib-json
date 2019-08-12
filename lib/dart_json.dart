@@ -2,20 +2,17 @@ library dart_json;
 
 import 'dart:convert';
 
+abstract class JsonAdapter<T> {
+  T fromJson(Json json);
+
+  Json toJson(T value);
+}
+
 class JsonException implements Exception {
+  JsonException(this._message, [this._cause]);
 
   String _message;
   Exception _cause;
-
-  JsonException.invalidJson([Exception cause]):
-      _message = "Invalid JSON.",
-      _cause = cause;
-
-  JsonException.unsupportedType(dynamic value):
-      _message = "Unsupported type ${value.runtimeType}.";
-
-  JsonException.wrongTypeOfItem(String reason):
-      _message = reason;
 
   @override
   String toString() {
@@ -25,12 +22,6 @@ class JsonException implements Exception {
       return _message;
     }
   }
-}
-
-abstract class JsonAdapter<T> {
-  T fromJson(Json json);
-
-  Json toJson(T value);
 }
 
 class Json {
@@ -54,7 +45,7 @@ class Json {
       final List<dynamic> list = raw;
       this._raw = list.map((v) => Json(v)).toList();
     } else {
-      throw JsonException.unsupportedType(raw);
+      throw JsonException("Can not create a JSON with type ${raw.runtimeType}.");
     }
   }
 
@@ -112,7 +103,7 @@ class Json {
     if ((_raw is num) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException.wrongTypeOfItem('It is not a num value.');
+      throw JsonException("Unable access a value. The internal value of JSON must be a num, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -124,7 +115,7 @@ class Json {
     if ((_raw is int) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException.wrongTypeOfItem('It is not an int value.');
+      throw JsonException("Unable access a value. The internal value of JSON must be a int, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -136,7 +127,7 @@ class Json {
     if ((_raw is double) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException.wrongTypeOfItem('It is not a double value.');
+      throw JsonException("Unable access a value. The internal value of JSON must be a double, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -148,7 +139,7 @@ class Json {
     if ((_raw is String) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException.wrongTypeOfItem('It is not a string value.');
+      throw JsonException("Unable access a value. The internal value of JSON must be a string, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -160,7 +151,7 @@ class Json {
     if ((_raw is bool) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException.wrongTypeOfItem('It is not a bool value.');
+      throw JsonException("Unable access a value. The internal value of JSON must be a bool, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -177,7 +168,7 @@ class Json {
       final reason = """
 Unable to access a value at "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
       .runtimeType}.""";
-      throw JsonException.wrongTypeOfItem(reason);
+      throw JsonException(reason);
     }
 
     Map<String, Json> map = _raw;
@@ -195,7 +186,7 @@ Unable to access a value at "$key" key. The JSON must be an Object type with Map
       final reason = """
 Unable to set a value at "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
         .runtimeType}.""";
-      throw JsonException.wrongTypeOfItem(reason);
+      throw JsonException(reason);
     }
 
     Map<String, Json> map = _raw;
@@ -209,7 +200,7 @@ Unable to set a value at "$key" key. The JSON must be an Object type with Map<St
       final reason = """
 Unable to cast the JSON value to a list. The JSON must be an Array type with List<Json> internal value type, but it's ${_raw
         .runtimeType}.""";
-      throw JsonException.wrongTypeOfItem(reason);
+      throw JsonException(reason);
     }
 
     List<Json> list = _raw;
