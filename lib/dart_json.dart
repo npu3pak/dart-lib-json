@@ -100,27 +100,63 @@ class Json {
   // ignore: unnecessary_getters_setters
   set dynamicValue(dynamic value) => _raw = value;
 
+  // Num
+
+  num get numValue {
+    if ((_raw is num) || (_raw == null)) {
+      return _raw;
+    } else {
+      throw JsonException.wrongTypeOfItem('It is not a num value.');
+    }
+  }
+
+  set numValue(num value) => _raw = value;
+
   // Int
 
-  int get intValue => _raw;
+  int get intValue {
+    if ((_raw is int) || (_raw == null)) {
+      return _raw;
+    } else {
+      throw JsonException.wrongTypeOfItem('It is not an int value.');
+    }
+  }
 
   set intValue(int value) => _raw = value;
 
   // Double
 
-  double get doubleValue => _raw;
+  double get doubleValue {
+    if ((_raw is double) || (_raw == null)) {
+      return _raw;
+    } else {
+      throw JsonException.wrongTypeOfItem('It is not a double value.');
+    }
+  }
 
   set doubleValue(double value) => _raw = value;
 
   // String
 
-  String get stringValue => _raw;
+  String get stringValue {
+    if ((_raw is String) || (_raw == null)) {
+      return _raw;
+    } else {
+      throw JsonException.wrongTypeOfItem('It is not a string value.');
+    }
+  }
 
   set stringValue(String value) => _raw = value;
 
   // Bool
 
-  bool get boolValue => _raw;
+  bool get boolValue {
+    if ((_raw is bool) || (_raw == null)) {
+      return _raw;
+    } else {
+      throw JsonException.wrongTypeOfItem('It is not a bool value.');
+    }
+  }
 
   set boolValue(bool value) => _raw = value;
 
@@ -137,9 +173,9 @@ Unable to access a value at "$key" key. The JSON must be an Object type with Map
       .runtimeType}.""";
       throw JsonException.wrongTypeOfItem(reason);
     }
-    
+
     Map<String, Json> map = _raw;
-    
+
     if (map.containsKey(key)){
       return map[key];
     } else {
