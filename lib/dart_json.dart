@@ -27,6 +27,12 @@ class JsonException implements Exception {
   }
 }
 
+abstract class JsonAdapter<T> {
+  T fromJson(Json json);
+
+  Json toJson(T value);
+}
+
 class Json {
 
   // Can be a simple value, a List<Json>, or a Map<String, Json>.
@@ -160,7 +166,7 @@ Unable to set a value at "$key" key. The JSON must be an Object type with Map<St
     map[key] = value;
   }
 
-// List
+  // List
 
   List<Json> get list {
     if (_raw is List<Json> == false) {
@@ -173,4 +179,10 @@ Unable to cast the JSON value to a list. The JSON must be an Array type with Lis
     List<Json> list = _raw;
     return list;
   }
+
+  // Custom
+
+  T get<T>(JsonAdapter<T> adapter) => adapter.fromJson(this);
+
+  void set<T>(T value, JsonAdapter<T> adapter) => _raw = adapter.toJson(value)?._raw;
 }
