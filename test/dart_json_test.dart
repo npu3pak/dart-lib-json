@@ -199,6 +199,41 @@ void main() {
       expect(j.list[3].intValue, 5);
     });
   });
+
+  group('numValue', () {
+    test('.parse() value', () {
+      final json = Json.parse("1");
+
+      expect(json.numValue, equals(1));
+    });
+
+    test('.parse null', () {
+      final json = Json.parse("null");
+
+      expect(json.numValue, isNull);
+    });
+
+    test('assigned int value', () {
+      final json = Json.parse("1");
+      json.numValue = 2;
+
+      expect(json.numValue, equals(2));
+    });
+
+    test('assigned double value', () {
+      final json = Json.parse("1.1");
+      json.numValue = 2.2;
+
+      expect(json.numValue, equals(2.2));
+    });
+
+    test('assigned null', () {
+      final json = Json.parse("1");
+      json.numValue = null;
+
+      expect(json.numValue, isNull);
+    });
+  });
   
   group('intValue', () {
     test('.parse() value', () {
@@ -225,6 +260,99 @@ void main() {
       json.intValue = null;
 
       expect(json.intValue, isNull);
+    });
+  });
+
+  group('doubleValue', () {
+    test('.parse() value', () {
+      final json = Json.parse("1.0");
+
+      expect(json.doubleValue, equals(1.0));
+    });
+
+    test('.parse null', () {
+      final json = Json.parse("null");
+
+      expect(json.doubleValue, isNull);
+    });
+
+    test('assigned double value', () {
+      final json = Json.parse("1.0");
+      json.doubleValue = 2.0;
+
+      expect(json.doubleValue, equals(2.0));
+    });
+
+    test('assigned int value', () {
+      final json = Json.parse("1.0");
+      json.doubleValue = 2;
+
+      expect(json.doubleValue, equals(2.0));
+    });
+
+    test('assigned null', () {
+      final json = Json.parse("1");
+      json.doubleValue = null;
+
+      expect(json.doubleValue, isNull);
+    });
+  });
+
+  group('stringValue', () {
+    test('.parse() value', () {
+      final json = Json.parse('"Str"');
+
+      expect(json.stringValue, 'Str');
+    });
+
+    test('.parse null', () {
+      final json = Json.parse("null");
+
+      expect(json.stringValue, isNull);
+    });
+
+    test('.assigned value', () {
+      final json = Json.object();
+      json["strKey"].stringValue = 'Str';
+
+      expect(json["strKey"].stringValue, 'Str');
+    });
+
+    test('.assigned null', () {
+      final json = Json.object();
+      json["strKey"].stringValue = null;
+
+      expect(json["strKey"].stringValue, isNull);
+    });
+  });
+
+  group('boolValue', () {
+    test('.parse() value', () {
+      final json = Json.parse("true");
+
+      expect(json.boolValue, equals(true));
+    });
+
+    test('.parse null', () {
+      final json = Json.parse("null");
+
+      expect(json.boolValue, isNull);
+    });
+
+    test('.assigned value', () {
+      final json = Json.object();
+      json["boolTrueKey"].boolValue = true;
+      json["boolFalseKey"].boolValue = false;
+
+      expect(json["boolTrueKey"].boolValue, equals(true));
+      expect(json["boolFalseKey"].boolValue, equals(false));
+    });
+
+    test('.assigned null', () {
+      final json = Json.object();
+      json["boolKey"].boolValue = null;
+
+      expect(json["boolKey"].boolValue, isNull);
     });
   });
 
@@ -348,12 +476,16 @@ void main() {
 
   test('json object to string', () {
     final json = Json.object();
+    json["dynamicKey"].dynamicValue = "dynamic";
+    json["numKey"].numValue = 1.1;
     json["intKey"].intValue = 1;
+    json["doubleKey"].doubleValue = 2.2;
     json["strKey"].stringValue = "str";
+    json["boolKey"].boolValue = true;
     json["nullKey"].stringValue = null;
     final restoredStr = json.asString();
 
-    expect(restoredStr, equals('{"intKey":1,"strKey":"str","nullKey":null}'));
+    expect(restoredStr, equals('{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}'));
   });
 
 
