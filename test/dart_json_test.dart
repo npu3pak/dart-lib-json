@@ -476,12 +476,16 @@ void main() {
 
   test('json object to string', () {
     final json = Json.object();
+    json["dynamicKey"].dynamicValue = "dynamic";
+    json["numKey"].numValue = 1.1;
     json["intKey"].intValue = 1;
+    json["doubleKey"].doubleValue = 2.2;
     json["strKey"].stringValue = "str";
+    json["boolKey"].boolValue = true;
     json["nullKey"].stringValue = null;
     final restoredStr = json.asString();
 
-    expect(restoredStr, equals('{"intKey":1,"strKey":"str","nullKey":null}'));
+    expect(restoredStr, equals('{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}'));
   });
 
 
