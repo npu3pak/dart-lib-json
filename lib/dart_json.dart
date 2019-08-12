@@ -118,6 +118,12 @@ class Json {
 
   set doubleValue(double value) => _raw = value;
 
+  // Num
+
+  num get numValue => _raw;
+
+  set numValue(num value) => _raw = value;
+
   // String
 
   String get stringValue => _raw;
