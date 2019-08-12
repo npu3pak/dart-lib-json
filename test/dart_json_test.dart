@@ -376,4 +376,42 @@ void main() {
     });
   });
 
+  group('custom types', () {
+    test('custom types', () {
+      final j = Json.object();
+      j["gender"].stringValue = "M";
+      expect(j["gender"].get(GenderAdapter()), Gender.male);
+
+      j["gender"].set(Gender.female, GenderAdapter());
+      expect(j["gender"].stringValue, "F");
+
+      j["gender"].stringValue = "Unknown";
+      expect(j["gender"].get(GenderAdapter()), null);
+    });
+  });
 }
+
+enum Gender {
+  male, female
+}
+
+class GenderAdapter implements JsonAdapter<Gender> {
+  @override
+  Gender fromJson(Json json) {
+    switch (json.stringValue ?? "") {
+      case "M": return Gender.male;
+      case "F": return Gender.female;
+      default: return null;
+    }
+  }
+
+  @override
+  Json toJson(Gender value) {
+    switch (value) {
+      case Gender.male: return Json("M");
+      case Gender.female: return Json("F");
+      default: return Json.empty();
+    }
+  }
+}
+
