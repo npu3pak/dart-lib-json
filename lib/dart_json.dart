@@ -17,10 +17,6 @@ class JsonException implements Exception {
   JsonException.wrongTypeOfItem(String reason):
       _message = reason;
 
-  JsonException.arrayOutOfBounds(int index, Exception cause):
-      _message = "Array index $index out of bounds",
-      _cause = cause;
-
   @override
   String toString() {
     if (_cause != null) {
@@ -167,12 +163,14 @@ Unable to set a value at "$key" key. The JSON must be an Object type with Map<St
 // List
 
   List<Json> get list {
-    if (_raw is List<Json>) {
-      return _raw;
-    } else {
-      throw Exception();
+    if (_raw is List<Json> == false) {
+      final reason = """
+Unable to cast the JSON value to a list. The JSON must be an Array type with List<Json> internal value type, but it's ${_raw
+        .runtimeType}.""";
+      throw JsonException.wrongTypeOfItem(reason);
     }
-  }
 
-  set list(List<Json> value) => _raw = value;
+    List<Json> list = _raw;
+    return list;
+  }
 }
