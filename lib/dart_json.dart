@@ -14,15 +14,11 @@ class JsonException implements Exception {
   JsonException.unsupportedType(dynamic value):
       _message = "Unsupported type ${value.runtimeType}.";
 
-  JsonException.wrongTypeOfItem(dynamic value, String reason):
-      _message = "Wrong type of item ${value.runtimeType}. $reason";
+  JsonException.wrongTypeOfItem(String reason):
+      _message = reason;
 
   JsonException.arrayOutOfBounds(int index, Exception cause):
       _message = "Array index $index out of bounds",
-      _cause = cause;
-
-  JsonException.dictionaryKeyNotExist(String key, Exception cause):
-      _message = "Dictionary key $key not exist",
       _cause = cause;
 
   @override
@@ -72,7 +68,7 @@ class Json {
   Json.empty(): this(null);
 
   Json.object() {
-    final Map<String, dynamic> empty = {};
+    final Map<String, Json> empty = {};
     _raw = empty;
   }
 
@@ -135,18 +131,21 @@ class Json {
   // Map
 
   Json operator [](String key) {
-    if (_raw is Map<String, dynamic> == false) {
-      throw Exception();
-    }
+    return _getMapValue(key);
+  }
 
-    Map<String, dynamic> map = _raw;
+  Json _getMapValue(String key) {
+    if (_raw is Map<String, Json> == false) {
+      final reason = """
+Unable to access a value at "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+      .runtimeType}.""";
+      throw JsonException.wrongTypeOfItem(reason);
+    }
+    
+    Map<String, Json> map = _raw;
+    
     if (map.containsKey(key)){
-      final value = _raw[key];
-      if (value is Json) {
-        return value;
-      } else {
-        return Json(_raw[key]);
-      }
+      return map[key];
     } else {
       map[key] = Json.object();
       return map[key];
@@ -154,11 +153,15 @@ class Json {
   }
 
   void operator []=(String key, Json value) {
-    if (_raw is Map<String, dynamic> == false) {
-      throw Exception();
+    if (_raw is Map<String, Json> == false) {
+      final reason = """
+Unable to set a value at "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+        .runtimeType}.""";
+      throw JsonException.wrongTypeOfItem(reason);
     }
 
-    _raw[key] = value;
+    Map<String, Json> map = _raw;
+    map[key] = value;
   }
 
 // List

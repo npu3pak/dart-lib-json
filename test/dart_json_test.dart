@@ -166,6 +166,25 @@ void main() {
       expect(j.asPrettyString(), equals(str));
     });
   });
+
+  group('set and get object values', () {
+    test('set object values', () {
+      final j = Json.object();
+      j["k"].stringValue = "v";
+      j["list"].list = [Json(1), Json(2)];
+      j["nested"]["nestedList"].list = [Json(1), Json(2)];
+
+      expect(j.asString(), '{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
+    });
+
+    test('get object values', () {
+      final j = Json.parse('{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
+
+      expect(j["k"].stringValue, "v");
+      expect(j["list"].list[0].intValue, 1);
+      expect(j["nested"]["nestedList"].list[0].intValue, 1);
+    });
+  });
   
   group('intValue', () {
     test('.parse() value', () {
