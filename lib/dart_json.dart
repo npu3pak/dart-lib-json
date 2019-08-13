@@ -203,6 +203,8 @@ class Json {
   String get stringValue {
     if ((_raw is String) || (_raw == null)) {
       return _raw;
+    } else if ((_raw is num) || (_raw is double) || (_raw is int)) {
+      return "$_raw";
     } else {
       throw JsonException("Unable access a value. The internal value of JSON must be a string, but it's ${_raw.runtimeType}.");
     }
