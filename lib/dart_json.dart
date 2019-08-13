@@ -117,7 +117,7 @@ class Json {
         String stringValue = value;
         _raw = num.parse(stringValue.replaceAll(',', '.'));
       } catch(e) {
-        throw JsonException("Value ${value} cannot be cast to num");
+        throw JsonException("Unable to cast a value of ${_raw.runtimeType} to num");
       }
       return;
     }
@@ -126,7 +126,7 @@ class Json {
       return;
     }
 
-    throw JsonException("Value ${value} cannot be cast to num");
+    throw JsonException("Unable to cast a value of ${_raw.runtimeType} to num");
   }
 
   // Int
@@ -154,7 +154,7 @@ class Json {
       try {
         _raw = int.parse(value as String);
       } catch(e) {
-        throw JsonException("Value ${value} cannot be cast to int");
+        throw JsonException("Unable to cast a value of ${_raw.runtimeType} to int");
       }
       return;
     }
@@ -163,7 +163,7 @@ class Json {
       return;
     }
 
-    throw JsonException("Value ${value} cannot be cast to int");
+    throw JsonException("Unable to cast a value of ${_raw.runtimeType} to int");
   }
 
   // Double
@@ -186,7 +186,7 @@ class Json {
         String stringValue = value;
         _raw = double.parse(stringValue.replaceAll(',', '.'));
       } catch(e) {
-        throw JsonException("Value ${value} cannot be cast to double");
+        throw JsonException("Unable to cast a value of ${_raw.runtimeType} to double");
       }
       return;
     }
@@ -195,7 +195,7 @@ class Json {
       return;
     }
 
-    throw JsonException("Value ${value} cannot be cast to double");
+    throw JsonException("Unable to cast a value of ${_raw.runtimeType} to double");
   }
 
   // String
