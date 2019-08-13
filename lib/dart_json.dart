@@ -107,7 +107,27 @@ class Json {
     }
   }
 
-  set numValue(num value) => _raw = value;
+  set numValue(dynamic value) {
+    if ((value is double) || (value is num) || (value is int)) {
+      _raw = (value as num);
+      return;
+    }
+    if (value is String) {
+      try {
+        String stringValue = value;
+        _raw = num.parse(stringValue.replaceAll(',', '.'));
+      } catch(e) {
+        throw JsonException("Value ${value} cannot be cast to num");
+      }
+      return;
+    }
+    if (value == null) {
+      _raw = null;
+      return;
+    }
+
+    throw JsonException("Value ${value} cannot be cast to num");
+  }
 
   // Int
 
@@ -119,7 +139,32 @@ class Json {
     }
   }
 
-  set intValue(int value) => _raw = value;
+  set intValue(dynamic value) {
+    if (value is int) {
+      _raw = value.toInt();
+      return;
+    }
+    if ((value is double) || (value is num)) {
+      if ((value as double).remainder(1) == 0) { // use this condition because double.toInt() just drop fractional part of a number
+        _raw = value.toInt();
+        return;
+      }
+    }
+    if (value is String) {
+      try {
+        _raw = int.parse(value as String);
+      } catch(e) {
+        throw JsonException("Value ${value} cannot be cast to int");
+      }
+      return;
+    }
+    if (value == null) {
+      _raw = null;
+      return;
+    }
+
+    throw JsonException("Value ${value} cannot be cast to int");
+  }
 
   // Double
 
@@ -131,7 +176,27 @@ class Json {
     }
   }
 
-  set doubleValue(double value) => _raw = value;
+  set doubleValue(dynamic value) {
+    if ((value is double) || (value is num) || (value is int)) {
+      _raw = value.toDouble();
+      return;
+    }
+    if (value is String) {
+      try {
+        String stringValue = value;
+        _raw = double.parse(stringValue.replaceAll(',', '.'));
+      } catch(e) {
+        throw JsonException("Value ${value} cannot be cast to double");
+      }
+      return;
+    }
+    if (value == null) {
+      _raw = null;
+      return;
+    }
+
+    throw JsonException("Value ${value} cannot be cast to double");
+  }
 
   // String
 

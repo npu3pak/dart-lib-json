@@ -214,7 +214,7 @@ void main() {
     });
 
     test('assigned int value', () {
-      final json = Json.parse("1");
+      final json = Json.parse("1.0");
       json.numValue = 2;
 
       expect(json.numValue, equals(2));
@@ -225,6 +225,15 @@ void main() {
       json.numValue = 2.2;
 
       expect(json.numValue, equals(2.2));
+    });
+
+    test('assigned string value', () {
+      final json = Json.parse("1.1");
+
+      json.numValue = "2.1";
+      expect(json.numValue, equals(2.1));
+      json.numValue = "3,1";
+      expect(json.numValue, equals(3.1));
     });
 
     test('assigned null', () {
@@ -251,6 +260,20 @@ void main() {
     test('assigned value', () {
       final json = Json.parse("1");
       json.intValue = 2;
+
+      expect(json.intValue, equals(2));
+    });
+
+    test('assigned double value', () {
+      final json = Json.parse("1");
+      json.intValue = 2.0;
+
+      expect(json.intValue, equals(2));
+    });
+
+    test('assigned string value', () {
+      final json = Json.parse("1");
+      json.intValue = "2";
 
       expect(json.intValue, equals(2));
     });
@@ -288,6 +311,15 @@ void main() {
       json.doubleValue = 2;
 
       expect(json.doubleValue, equals(2.0));
+    });
+
+    test('assigned string value', () {
+      final json = Json.parse("1.0");
+
+      json.doubleValue = "2.1";
+      expect(json.doubleValue, equals(2.1));
+      json.doubleValue = "3,1";
+      expect(json.doubleValue, equals(3.1));
     });
 
     test('assigned null', () {
