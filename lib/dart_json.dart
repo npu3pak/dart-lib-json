@@ -171,7 +171,7 @@ class Json {
   Json _getMapValue(String key) {
     if (_raw is Map<String, Json> == false) {
       final reason = """
-Unable to access a value at [$_keyPath] with "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+Unable to access a value with "$key" key. The JSON at [$_keyPath] path must be an Object with Map<String, Json> internal value type, but it's ${_raw
       .runtimeType}.""";
       throw JsonException(reason);
     }
@@ -182,7 +182,7 @@ Unable to access a value at [$_keyPath] with "$key" key. The JSON must be an Obj
       map[key]._keyPath = "$_keyPath/$key";
       return map[key];
     } else {
-      map[key] = Json.object();
+      map[key] = Json.empty();
       map[key]._keyPath = "$_keyPath/$key";
       return map[key];
     }
@@ -191,7 +191,7 @@ Unable to access a value at [$_keyPath] with "$key" key. The JSON must be an Obj
   void operator []=(String key, Json value) {
     if (_raw is Map<String, Json> == false) {
       final reason = """
-Unable to set a value at [$_keyPath] with "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+Unable to set a value with "$key" key. The JSON at [$_keyPath] path must be an Object with Map<String, Json> internal type, but it's ${_raw
         .runtimeType}.""";
       throw JsonException(reason);
     }
@@ -206,7 +206,7 @@ Unable to set a value at [$_keyPath] with "$key" key. The JSON must be an Object
   List<Json> get list {
     if (_raw is List<Json> == false) {
       final reason = """
-Unable to cast the JSON value at [$_keyPath] to a list. The JSON must be an Array type with List<Json> internal value type, but it's ${_raw
+Unable to cast the JSON value at [$_keyPath] to a list. The JSON must be an Array type with List<Json> internal type, but it's ${_raw
         .runtimeType}.""";
       throw JsonException(reason);
     }
