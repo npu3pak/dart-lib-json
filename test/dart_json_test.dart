@@ -113,6 +113,28 @@ void main() {
     });
   });
 
+  group('key path', () {
+    test('key path', () {
+      final j = Json({
+        "null": null,
+        "inner1": {
+          "key1":"value1",
+          "inner2": {
+            "key2":"value2"
+          }
+        },
+        "list": [1,2]
+      });
+
+      expect(j.keyPath, "/");
+      expect(j["null"].keyPath, "/null");
+      expect(j["inner1"].keyPath, "/inner1");
+      expect(j["inner1"]["key1"].keyPath, "/inner1/key1");
+      expect(j["list"].keyPath, "/list");
+      expect(j["list"].list[0].keyPath, "/list/0");
+    });
+  });
+
   group('serialization and deserialization', () {
     test('parse and asString', () {
       final str = """{
