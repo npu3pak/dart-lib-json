@@ -194,6 +194,7 @@ void main() {
       final j = Json.object();
       j["k"].stringValue = "v";
       j["list"] = Json([1,2]);
+      j["nested"] = Json.object();
       j["nested"]["nestedList"] = Json([Json(1),Json(2)]);
 
       expect(j.asString(), '{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
@@ -510,12 +511,13 @@ void main() {
     expect(restoredStr, equals('{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}'));
   });
 
-
   group('asString', () {
     test('json with nested object', () {
       final json = Json.object();
       json["value"].stringValue = "str";
+      json["nested"] = Json.object();
       json["nested"]["value"].stringValue = "str";
+      json["nested"]["nested"] = Json.object();
       json["nested"]["nested"]["value"].stringValue = "str";
       final restoredStr = json.asString();
 
