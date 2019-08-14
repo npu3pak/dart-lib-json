@@ -28,7 +28,7 @@ class Json {
 
   // Can be a simple value, a List<Json>, or a Map<String, Json>.
   dynamic _raw;
-  var _path = "";
+  var _keyPath = "";
 
   // Constructors
 
@@ -69,6 +69,10 @@ class Json {
   Json.list() {
     _raw = List<Json>();
   }
+  
+  // Key path
+
+  String get keyPath => _keyPath.length == 0 ? "/" : _keyPath;
 
   // Serialization and deserialization
 
@@ -104,7 +108,7 @@ class Json {
     if ((_raw is num) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException("Unable access a value at [$_path]. The internal value of JSON must be a num, but it's ${_raw.runtimeType}.");
+      throw JsonException("Unable access a value at [$_keyPath]. The internal value of JSON must be a num, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -116,7 +120,7 @@ class Json {
     if ((_raw is int) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException("Unable access a value at [$_path]. The internal value of JSON must be a int, but it's ${_raw.runtimeType}.");
+      throw JsonException("Unable access a value at [$_keyPath]. The internal value of JSON must be a int, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -128,7 +132,7 @@ class Json {
     if ((_raw is double) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException("Unable access a value at [$_path]. The internal value of JSON must be a double, but it's ${_raw.runtimeType}.");
+      throw JsonException("Unable access a value at [$_keyPath]. The internal value of JSON must be a double, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -140,7 +144,7 @@ class Json {
     if ((_raw is String) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException("Unable access a value at [$_path]. The internal value of JSON must be a string, but it's ${_raw.runtimeType}.");
+      throw JsonException("Unable access a value at [$_keyPath]. The internal value of JSON must be a string, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -152,7 +156,7 @@ class Json {
     if ((_raw is bool) || (_raw == null)) {
       return _raw;
     } else {
-      throw JsonException("Unable access a value at [$_path]. The internal value of JSON must be a bool, but it's ${_raw.runtimeType}.");
+      throw JsonException("Unable access a value at [$_keyPath]. The internal value of JSON must be a bool, but it's ${_raw.runtimeType}.");
     }
   }
 
@@ -167,7 +171,7 @@ class Json {
   Json _getMapValue(String key) {
     if (_raw is Map<String, Json> == false) {
       final reason = """
-Unable to access a value at "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+Unable to access a value at [$_keyPath] with "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
       .runtimeType}.""";
       throw JsonException(reason);
     }
@@ -175,11 +179,11 @@ Unable to access a value at "$key" key. The JSON must be an Object type with Map
     Map<String, Json> map = _raw;
 
     if (map.containsKey(key)){
-      map[key]._path = "$_path/$key";
+      map[key]._keyPath = "$_keyPath/$key";
       return map[key];
     } else {
       map[key] = Json.object();
-      map[key]._path = "$_path/$key";
+      map[key]._keyPath = "$_keyPath/$key";
       return map[key];
     }
   }
@@ -187,14 +191,14 @@ Unable to access a value at "$key" key. The JSON must be an Object type with Map
   void operator []=(String key, Json value) {
     if (_raw is Map<String, Json> == false) {
       final reason = """
-Unable to set a value at [$_path] with "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
+Unable to set a value at [$_keyPath] with "$key" key. The JSON must be an Object type with Map<String, Json> internal value type, but it's ${_raw
         .runtimeType}.""";
       throw JsonException(reason);
     }
 
     Map<String, Json> map = _raw;
     map[key] = value;
-    map[key]._path = key;
+    map[key]._keyPath = key;
   }
 
   // List
@@ -202,12 +206,17 @@ Unable to set a value at [$_path] with "$key" key. The JSON must be an Object ty
   List<Json> get list {
     if (_raw is List<Json> == false) {
       final reason = """
-Unable to cast the JSON value at [$_path] to a list. The JSON must be an Array type with List<Json> internal value type, but it's ${_raw
+Unable to cast the JSON value at [$_keyPath] to a list. The JSON must be an Array type with List<Json> internal value type, but it's ${_raw
         .runtimeType}.""";
       throw JsonException(reason);
     }
 
     List<Json> list = _raw;
+
+    for (var i=0; i<list.length; i++) {
+      list[i]._keyPath = "$_keyPath/$i";
+    }
+
     return list;
   }
 
