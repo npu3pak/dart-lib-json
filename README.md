@@ -87,6 +87,31 @@ final doubleVal = json["price"].dynamicValue;
 final boolVal = json["inStock"].dynamicValue;
 ```
 
+### Checking if a value exists
+You can check if the JSON contains the element with the giving name:
+```dart
+if (item["element"].dynamicValue != null) {
+
+}
+```
+Example:
+
+```dart
+final json = Json([
+  {"name": "John"},
+  {
+    "name": "Nick",
+    "extra": {"phone": "123-4567"}
+  }
+]);
+
+for (var item in json.list) {
+  if (item["extra"].dynamicValue != null) {
+    print(item["name"].stringValue);
+  }
+}
+```
+
 ### Making JSON objects
 From a dictionary:
 ```dart
@@ -117,16 +142,25 @@ final value1 = j["inner1"]["key1"].stringValue;
 final value2 = j["inner1"]["inner2"]["key2"].stringValue;
 ```
 
-### Working with JSON list
-You can create a JSON list from a list of JSON objects.
+### Working with a JSON list
+You can create a JSON list from a list of JSON objects:
 
 ```dart
 final item1 = Json({"name": "John"});
-final item2 = Json({"name": "Jack"});
+final item2 = Json({"name": "Nick"});
 final json = Json([item1, item2]);
 ```
 
-You can access a list of JSON object with a **list** property.
+You can create a JSON list from a list of dictionaries:
+
+```dart
+final json = Json([
+    {"name": "John"},
+    {"name": "Nick"},
+]);
+```
+
+You can access a list of a JSON object with the **list** property.
 
 ```dart
 List<Json> jsonList = json.list;
@@ -142,7 +176,7 @@ json.list.add(item1); // [{"item":1}]
 json.list.add(item2); // [{"item":2}]
 ```
 
-You can modify a list items like this:
+You can modify a list of items like this:
 
 ```dart
 final item1 = Json({"item": 1});
