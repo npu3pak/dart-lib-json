@@ -259,3 +259,12 @@ main() {
   );
 }
 ```
+
+## Authors
+
+Evgeniy Safronov (evsafronov.personal@yandex.ru)
+Alexander Smetannikov (alexsmetdev@gmail.com)
+
+## License
+
+dart_json is available under the MIT license. See the LICENSE file for more info.
