@@ -263,6 +263,7 @@ main() {
 ## Authors
 
 Evgeniy Safronov (evsafronov.personal@yandex.ru)
+
 Alexander Smetannikov (alexsmetdev@gmail.com)
 
 ## License
