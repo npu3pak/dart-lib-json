@@ -237,7 +237,7 @@ void main() {
     });
 
     test('assigned int value', () {
-      final json = Json.parse("1");
+      final json = Json.parse("1.0");
       json.numValue = 2;
 
       expect(json.numValue, equals(2));
@@ -248,6 +248,15 @@ void main() {
       json.numValue = 2.2;
 
       expect(json.numValue, equals(2.2));
+    });
+
+    test('assigned string value', () {
+      final json = Json.parse("1.1");
+
+      json.numValue = "2.1";
+      expect(json.numValue, equals(2.1));
+      json.numValue = "3,1";
+      expect(json.numValue, equals(3.1));
     });
 
     test('assigned null', () {
@@ -271,9 +280,23 @@ void main() {
       expect(json.intValue, isNull);
     });
 
-    test('assigned value', () {
+    test('assigned int value', () {
       final json = Json.parse("1");
       json.intValue = 2;
+
+      expect(json.intValue, equals(2));
+    });
+
+    test('assigned double value', () {
+      final json = Json.parse("1");
+      json.intValue = 2.0;
+
+      expect(json.intValue, equals(2));
+    });
+
+    test('assigned string value', () {
+      final json = Json.parse("1");
+      json.intValue = "2";
 
       expect(json.intValue, equals(2));
     });
@@ -313,6 +336,15 @@ void main() {
       expect(json.doubleValue, equals(2.0));
     });
 
+    test('assigned string value', () {
+      final json = Json.parse("1.0");
+
+      json.doubleValue = "2.1";
+      expect(json.doubleValue, equals(2.1));
+      json.doubleValue = "3,1";
+      expect(json.doubleValue, equals(3.1));
+    });
+
     test('assigned null', () {
       final json = Json.parse("1");
       json.doubleValue = null;
@@ -328,24 +360,35 @@ void main() {
       expect(json.stringValue, 'Str');
     });
 
-    test('.parse null', () {
+    test('.parse() null', () {
       final json = Json.parse("null");
 
       expect(json.stringValue, isNull);
     });
 
-    test('.assigned value', () {
+    test('assigned value', () {
       final json = Json.object();
       json["strKey"].stringValue = 'Str';
 
       expect(json["strKey"].stringValue, 'Str');
     });
 
-    test('.assigned null', () {
+    test('assigned null', () {
       final json = Json.object();
       json["strKey"].stringValue = null;
 
       expect(json["strKey"].stringValue, isNull);
+    });
+
+    test('from simple types', () {
+      final json = Json.object();
+      json["intKey"].intValue = 1;
+      json["doubleKey"].doubleValue = 2.2;
+      json["numKey"].numValue = 3.3;
+
+      expect(json["intKey"].stringValue, '1');
+      expect(json["doubleKey"].stringValue, '2.2');
+      expect(json["numKey"].stringValue, '3.3');
     });
   });
 
