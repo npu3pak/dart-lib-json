@@ -219,6 +219,16 @@ main() {
       ),
     ).toList();
   }
+
+  // You can also use the convenience **toObjectList()** method
+   books = json["books"].toObjectList(
+        (j) => Book(
+          title: j["title"].stringValue,
+          year: j["year"].intValue,
+          inStock: j["inStock"].boolValue,
+          price: j["price"].doubleValue,
+        ),
+      );
 ```
 ### Making JSON from an objects list
 ```dart
@@ -226,7 +236,7 @@ final books = [
   Book(title: "Beetle in the Anthill", year: 1979, inStock: true, price: 5.99)
 ];
 
-final listJson = Json.list();
+Json listJson = Json.list();
 for (final book in books) {
   var itemJson = Json.object();
   itemJson["title"].stringValue = book.title;
@@ -237,6 +247,16 @@ for (final book in books) {
 }
 
 print(listJson.asPrettyString());
+
+// You can use the convenience **Json.fromObjectList** method as well
+listJson = Json.fromObjectList(books, (item) {
+  var j = Json.object();
+  j["title"].stringValue = item.title;
+  j["year"].intValue = item.year;
+  j["inStock"].boolValue = item.inStock;
+  j["price"].doubleValue = item.price;
+  return j;
+});
 ```
 
 ### Parsing custom types
