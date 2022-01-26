@@ -7,6 +7,9 @@ void main() {
       final nullJson = Json(null);
       expect(nullJson.intValue, null);
 
+      final numJson = Json(1);
+      expect(numJson.intValue, 1);
+
       final intJson = Json(1);
       expect(intJson.intValue, 1);
 
@@ -577,6 +580,81 @@ void main() {
       jsonStr,
       '[{"title":"Beetle in the Anthill","year":1979,"inStock":true,"price":5.99}]',
     );
+  });
+
+  group('optional', () {
+    final j = Json({
+      "null": null,
+      "inner1": {
+        "key1": "value1",
+        "inner2": {"key2": "value2"}
+      },
+      "list": [1, 2]
+    });
+
+    test("get elements", () {
+      final optional = j.optional;
+      // Existed keys
+      expect(j["inner1"]["key1"].stringValue, "value1");
+      expect(optional["inner1"]["key1"].stringValue, "value1");
+
+      // Inexisted keys in existed dictionary
+      expect(j["inner1"]["key2"].stringValue, null);
+      expect(optional["inner1"]["key2"].stringValue, null);
+
+      // Inexisted dictionary
+      expect(optional["inexisted"].stringValue, null);
+
+      // Inexisted keys in inexisted dictionary
+      expect(optional["inexisted"]["inexisted"].stringValue, null);
+      expect(optional["inexisted"]["inexisted"]["inexisted"].stringValue, null);
+
+      // Inexisted dictionary in existed dictionary
+      expect(j["inner1"].optional["inexisted"].stringValue, null);
+      expect(j["inner1"].optional["inexisted"]["inexisted"].stringValue, null);
+    });
+
+    test("setter", () {
+      expect(j.isOptional, false);
+
+      final optional = j.optional;
+      expect(optional.isOptional, true);
+    });
+
+    test("inheritance", () {
+      final optional = j.optional;
+      expect(optional["null"].isOptional, true);
+      expect(optional["inner1"].isOptional, true);
+      expect(optional["inner1"]["key1"].isOptional, true);
+      expect(optional["inner1"]["inner2"]["key2"].isOptional, true);
+      expect(optional["list"].isOptional, true);
+
+      // Items of JSON lists don't inherit the optional flag
+      expect(optional["list"].list[0].isOptional, false);
+      expect(optional["list"].list[0].optional.isOptional, true);
+    });
+
+    test("get elements", () {
+      final optional = j.optional;
+      // Existed keys
+      expect(j["inner1"]["key1"].stringValue, "value1");
+      expect(optional["inner1"]["key1"].stringValue, "value1");
+
+      // Inexisted keys in existed dictionary
+      expect(j["inner1"]["key2"].stringValue, null);
+      expect(optional["inner1"]["key2"].stringValue, null);
+
+      // Inexisted dictionary
+      expect(optional["inexisted"].stringValue, null);
+
+      // Inexisted keys in inexisted dictionary
+      expect(optional["inexisted"]["inexisted"].stringValue, null);
+      expect(optional["inexisted"]["inexisted"]["inexisted"].stringValue, null);
+
+      // Inexisted dictionary in existed dictionary
+      expect(j["inner1"].optional["inexisted"].stringValue, null);
+      expect(j["inner1"].optional["inexisted"]["inexisted"].stringValue, null);
+    });
   });
 }
 

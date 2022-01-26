@@ -28,6 +28,7 @@ class Json {
   // Can be a null, a simple value, a List<Json>, or a Map<String, Json>.
   dynamic _raw;
   String _keyPath = "";
+  bool _isOptional = false;
 
   // Constructors
 
@@ -96,6 +97,26 @@ class Json {
 
     return encoder.convert(_raw);
   }
+
+  // Optional
+
+  /// This property returns JSON, for which access to objects
+  /// by a nonexistent key will NOT result in an error,
+  /// but will return another empty optional JSON.
+  ///
+  /// However, calling [list] on a nonexistent key for optional JSON
+  /// will still fail. Items of [list] retrieved from the existing key
+  /// will not inherit the optional attribute.
+
+  Json get optional {
+    final optionalClone = Json.empty();
+    optionalClone._raw = _raw;
+    optionalClone._keyPath = _keyPath;
+    optionalClone._isOptional = true;
+    return optionalClone;
+  }
+
+  bool get isOptional => _isOptional;
 
   // Existence check
 
@@ -178,6 +199,13 @@ class Json {
   }
 
   Json _getMapValue(String key) {
+    if (_raw == null && _isOptional) {
+      final json = Json.empty();
+      json._isOptional = true;
+      json._keyPath = "$_keyPath/$key";
+      return json;
+    }
+
     if (_raw is Map<String, Json> == false) {
       throw JsonException(
         """Unable to access a value with "$key" key. The JSON at [$keyPath] path must be an Object with Map<String, Json> internal value type, but it's ${_raw.runtimeType}.""",
@@ -188,10 +216,12 @@ class Json {
 
     if (map.containsKey(key)) {
       map[key]!._keyPath = "$_keyPath/$key";
+      map[key]!._isOptional = _isOptional;
       return map[key]!;
     } else {
       map[key] = Json.empty();
       map[key]!._keyPath = "$_keyPath/$key";
+      map[key]!._isOptional = _isOptional;
       return map[key]!;
     }
   }
@@ -206,6 +236,7 @@ class Json {
     Map<String, Json> map = _raw;
     map[key] = value;
     map[key]!._keyPath = "$_keyPath/$key";
+    map[key]!._isOptional = _isOptional;
   }
 
   // List
