@@ -553,6 +553,62 @@ void main() {
       expect(j["gender"].get(GenderAdapter()), null);
     });
   });
+
+  group('list of objects', () {
+    test("from json", () {
+      final responseString = """{
+        "books": [
+          {"title": "Hard to Be a God", "year": 1964, "inStock": true, "price": 5.99 },
+          {"title": "Prisoners of Power", "year": 1971, "inStock": true, "price": 5.99 },
+          {"title": "Roadside Picnic", "year": 1972, "inStock": false }
+        ]
+      }
+      """;
+
+      Json json = Json.parse(responseString);
+      List<Book> books = json["books"].toObjectList(
+        (j) => Book(
+          title: j["title"].stringValue,
+          year: j["year"].intValue,
+          inStock: j["inStock"].boolValue,
+          price: j["price"].doubleValue,
+        ),
+      );
+
+      expect(books.length, 3);
+      expect(books.first.title, "Hard to Be a God");
+      expect(books.first.year, 1964);
+      expect(books.first.inStock, true);
+      expect(books.first.price, 5.99);
+    });
+  });
+
+  test("to json", () {
+    final books = [
+      Book(
+        title: "Beetle in the Anthill",
+        year: 1979,
+        inStock: true,
+        price: 5.99,
+      )
+    ];
+
+    Json json = Json.fromObjectList(books, (item) {
+      var j = Json.object();
+      j["title"].stringValue = item.title;
+      j["year"].intValue = item.year;
+      j["inStock"].boolValue = item.inStock;
+      j["price"].doubleValue = item.price;
+      return j;
+    });
+
+    final jsonStr = json.asString();
+
+    expect(
+      jsonStr,
+      '[{"title":"Beetle in the Anthill","year":1979,"inStock":true,"price":5.99}]',
+    );
+  });
 }
 
 enum Gender { male, female }
@@ -581,4 +637,13 @@ class GenderAdapter implements JsonAdapter<Gender> {
         return Json.empty();
     }
   }
+}
+
+class Book {
+  final String title;
+  final int year;
+  final bool inStock;
+  final double price;
+
+  Book({this.title, this.year, this.inStock, this.price});
 }

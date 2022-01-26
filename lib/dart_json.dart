@@ -246,7 +246,7 @@ class Json {
 
   // Convenience
 
-  static Json fromObjectList<T>(List<T> list, Json Function(T) builder) {
+  static Json fromObjectList<T>(List<T> list, Json Function(T item) builder) {
     if (list == null) {
       return Json.empty();
     }
