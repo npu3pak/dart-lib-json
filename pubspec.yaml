@@ -1,11 +1,10 @@
 name: dart_json
 description: JSON wrapper
 version: 0.0.1
-author:
 homepage:
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
   flutter:

@@ -1,5 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
+// @dart = 2.9
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_json/dart_json.dart';
 
 void main() {
@@ -29,12 +30,10 @@ void main() {
         "double": 9.9,
         "bool": true,
         "inner1": {
-          "key1":"value1",
-          "inner2": {
-            "key2":"value2"
-          }
+          "key1": "value1",
+          "inner2": {"key2": "value2"}
         },
-        "list": [1,2]
+        "list": [1, 2]
       });
 
       expect(j["null"].intValue, null);
@@ -55,12 +54,10 @@ void main() {
         "double": 9.9,
         "bool": true,
         "inner1": {
-          "key1":"value1",
-          "inner2": {
-            "key2":"value2"
-          }
+          "key1": "value1",
+          "inner2": {"key2": "value2"}
         },
-        "list": [1,2]
+        "list": [1, 2]
       });
       final j = Json(source);
 
@@ -75,22 +72,22 @@ void main() {
     });
 
     test('init with list of simple values', () {
-      final j = Json([1,2]);
+      final j = Json([1, 2]);
 
       expect(j.list[0].intValue, 1);
       expect(j.list[1].intValue, 2);
     });
 
     test('init with list of json objects', () {
-      final item1 = Json({"name":"John"});
-      final item2 = Json({"name":"Jack"});
-      final j = Json([item1,item2]);
+      final item1 = Json({"name": "John"});
+      final item2 = Json({"name": "Jack"});
+      final j = Json([item1, item2]);
 
       expect(j.list[0]["name"].stringValue, "John");
       expect(j.list[1]["name"].stringValue, "Jack");
     });
   });
-  
+
   group('empty init', () {
     test('init with null', () {
       final j = Json.empty();
@@ -118,12 +115,10 @@ void main() {
       final j = Json({
         "null": null,
         "inner1": {
-          "key1":"value1",
-          "inner2": {
-            "key2":"value2"
-          }
+          "key1": "value1",
+          "inner2": {"key2": "value2"}
         },
-        "list": [1,2]
+        "list": [1, 2]
       });
 
       expect(j.keyPath, "/");
@@ -193,15 +188,17 @@ void main() {
     test('set object values', () {
       final j = Json.object();
       j["k"].stringValue = "v";
-      j["list"] = Json([1,2]);
+      j["list"] = Json([1, 2]);
       j["nested"] = Json.object();
-      j["nested"]["nestedList"] = Json([Json(1),Json(2)]);
+      j["nested"]["nestedList"] = Json([Json(1), Json(2)]);
 
-      expect(j.asString(), '{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
+      expect(
+          j.asString(), '{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
     });
 
     test('get object values', () {
-      final j = Json.parse('{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
+      final j =
+          Json.parse('{"k":"v","list":[1,2],"nested":{"nestedList":[1,2]}}');
 
       expect(j["k"].stringValue, "v");
       expect(j["list"].list[0].intValue, 1);
@@ -257,11 +254,11 @@ void main() {
       expect(json.numValue, isNull);
     });
   });
-  
+
   group('intValue', () {
     test('.parse() value', () {
       final json = Json.parse("1");
-  
+
       expect(json.intValue, equals(1));
     });
 
@@ -420,7 +417,8 @@ void main() {
     });
 
     test('.parse', () {
-      final json = Json.parse('{"intKey": 1, "strKey": "str", "nullKey": null}');
+      final json =
+          Json.parse('{"intKey": 1, "strKey": "str", "nullKey": null}');
 
       expect(json["intKey"].intValue, equals(1));
       expect(json["strKey"].stringValue, equals("str"));
@@ -445,8 +443,8 @@ void main() {
     });
 
     test('set list', () {
-      final item1 = Json({"name":"John"});
-      final item2 = Json({"name":"Jack"});
+      final item1 = Json({"name": "John"});
+      final item2 = Json({"name": "Jack"});
       final json = Json.object();
       json["list"] = Json([item1, item2]);
 
@@ -455,9 +453,9 @@ void main() {
     });
 
     test('list append', () {
-      final item1 = Json({"name":"John"});
-      final item2 = Json({"name":"Jack"});
-      final item3 = Json({"name":"Stan"});
+      final item1 = Json({"name": "John"});
+      final item2 = Json({"name": "Jack"});
+      final item3 = Json({"name": "Stan"});
       final json = Json.object();
       json["list"] = Json([item1, item2]);
       var list = json["list"].list;
@@ -470,8 +468,8 @@ void main() {
     });
 
     test('asString', () {
-      final item1 = Json({"name":"John"});
-      final item2 = Json({"name":"Jack"});
+      final item1 = Json({"name": "John"});
+      final item2 = Json({"name": "Jack"});
       final json = Json.object();
       json["list"] = Json([item1, item2]);
 
@@ -479,8 +477,8 @@ void main() {
     });
 
     test('list constructor', () {
-      final item1 = Json({"name":"John"});
-      final item2 = Json({"name":"Jack"});
+      final item1 = Json({"name": "John"});
+      final item2 = Json({"name": "Jack"});
       final json = Json([item1, item2]);
 
       expect(json.list[0]["name"].stringValue, "John");
@@ -508,7 +506,12 @@ void main() {
     json["nullKey"].stringValue = null;
     final restoredStr = json.asString();
 
-    expect(restoredStr, equals('{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}'));
+    expect(
+      restoredStr,
+      equals(
+        '{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}',
+      ),
+    );
   });
 
   group('asString', () {
@@ -521,7 +524,12 @@ void main() {
       json["nested"]["nested"]["value"].stringValue = "str";
       final restoredStr = json.asString();
 
-      expect(restoredStr, equals('{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}'));
+      expect(
+        restoredStr,
+        equals(
+          '{"value":"str","nested":{"value":"str","nested":{"value":"str"}}}',
+        ),
+      );
     });
 
     test('simple value', () {
@@ -547,27 +555,30 @@ void main() {
   });
 }
 
-enum Gender {
-  male, female
-}
+enum Gender { male, female }
 
 class GenderAdapter implements JsonAdapter<Gender> {
   @override
   Gender fromJson(Json json) {
     switch (json.stringValue ?? "") {
-      case "M": return Gender.male;
-      case "F": return Gender.female;
-      default: return null;
+      case "M":
+        return Gender.male;
+      case "F":
+        return Gender.female;
+      default:
+        return null;
     }
   }
 
   @override
   Json toJson(Gender value) {
     switch (value) {
-      case Gender.male: return Json("M");
-      case Gender.female: return Json("F");
-      default: return Json.empty();
+      case Gender.male:
+        return Json("M");
+      case Gender.female:
+        return Json("F");
+      default:
+        return Json.empty();
     }
   }
 }
-
