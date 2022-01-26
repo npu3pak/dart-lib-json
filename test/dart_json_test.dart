@@ -1,5 +1,3 @@
-// @dart = 2.9
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_json/dart_json.dart';
 
@@ -376,34 +374,6 @@ void main() {
     });
   });
 
-  group('dynamicValue', () {
-    test('.parse() value', () {
-      final json = Json.parse("1");
-
-      expect(json.dynamicValue, equals(1));
-    });
-
-    test('.parse() null', () {
-      final json = Json.parse("null");
-
-      expect(json.dynamicValue, isNull);
-    });
-
-    test('assigned value', () {
-      final json = Json.parse("1");
-      json.dynamicValue = 2;
-
-      expect(json.dynamicValue, equals(2));
-    });
-
-    test('assigned null', () {
-      final json = Json.parse("1");
-      json.dynamicValue = null;
-
-      expect(json.dynamicValue, isNull);
-    });
-  });
-
   group('map', () {
     test('set values', () {
       final json = Json.object();
@@ -497,7 +467,6 @@ void main() {
 
   test('json object to string', () {
     final json = Json.object();
-    json["dynamicKey"].dynamicValue = "dynamic";
     json["numKey"].numValue = 1.1;
     json["intKey"].intValue = 1;
     json["doubleKey"].doubleValue = 2.2;
@@ -509,7 +478,7 @@ void main() {
     expect(
       restoredStr,
       equals(
-        '{"dynamicKey":"dynamic","numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}',
+        '{"numKey":1.1,"intKey":1,"doubleKey":2.2,"strKey":"str","boolKey":true,"nullKey":null}',
       ),
     );
   });
@@ -566,20 +535,20 @@ void main() {
       """;
 
       Json json = Json.parse(responseString);
-      List<Book> books = json["books"].toObjectList(
-        (j) => Book(
-          title: j["title"].stringValue,
-          year: j["year"].intValue,
-          inStock: j["inStock"].boolValue,
+      List<Book>? books = json["books"].toObjectList<Book>(
+        (Json j) => Book(
+          title: j["title"].stringValue!,
+          year: j["year"].intValue!,
+          inStock: j["inStock"].boolValue!,
           price: j["price"].doubleValue,
         ),
       );
 
-      expect(books.length, 3);
-      expect(books.first.title, "Hard to Be a God");
-      expect(books.first.year, 1964);
-      expect(books.first.inStock, true);
-      expect(books.first.price, 5.99);
+      expect(books?.length, 3);
+      expect(books?.first.title, "Hard to Be a God");
+      expect(books?.first.year, 1964);
+      expect(books?.first.inStock, true);
+      expect(books?.first.price, 5.99);
     });
   });
 
@@ -593,7 +562,7 @@ void main() {
       )
     ];
 
-    Json json = Json.fromObjectList(books, (item) {
+    Json json = Json.fromObjectList<Book>(books, (item) {
       var j = Json.object();
       j["title"].stringValue = item.title;
       j["year"].intValue = item.year;
@@ -615,7 +584,7 @@ enum Gender { male, female }
 
 class GenderAdapter implements JsonAdapter<Gender> {
   @override
-  Gender fromJson(Json json) {
+  Gender? fromJson(Json json) {
     switch (json.stringValue ?? "") {
       case "M":
         return Gender.male;
@@ -627,7 +596,7 @@ class GenderAdapter implements JsonAdapter<Gender> {
   }
 
   @override
-  Json toJson(Gender value) {
+  Json toJson(Gender? value) {
     switch (value) {
       case Gender.male:
         return Json("M");
@@ -643,7 +612,12 @@ class Book {
   final String title;
   final int year;
   final bool inStock;
-  final double price;
+  final double? price;
 
-  Book({this.title, this.year, this.inStock, this.price});
+  Book({
+    required this.title,
+    required this.year,
+    required this.inStock,
+    required this.price,
+  });
 }

@@ -1,39 +1,37 @@
-// @dart = 2.9
-
 library dart_json;
 
 import 'dart:convert';
 
 abstract class JsonAdapter<T> {
-  T fromJson(Json json);
+  T? fromJson(Json json);
 
-  Json toJson(T value);
+  Json toJson(T? value);
 }
 
 class JsonException implements Exception {
-  JsonException(this._message, [this._cause]);
+  final String message;
+  final Exception? cause;
 
-  final String _message;
-  final Exception _cause;
+  JsonException(this.message, [this.cause]);
 
   @override
   String toString() {
-    if (_cause != null) {
-      return _message + "\n" + _cause.toString();
+    if (cause != null) {
+      return '$message\n${cause.toString()}';
     } else {
-      return _message;
+      return message;
     }
   }
 }
 
 class Json {
-  // Can be a simple value, a List<Json>, or a Map<String, Json>.
+  // Can be a null, a simple value, a List<Json>, or a Map<String, Json>.
   dynamic _raw;
-  var _keyPath = "";
+  String _keyPath = "";
 
   // Constructors
 
-  Json(raw) {
+  Json(dynamic raw) {
     if (_isSupportedValueType(raw)) {
       _raw = raw;
     } else if (raw is Json) {
@@ -68,8 +66,7 @@ class Json {
   Json.empty() : this(null);
 
   Json.object() {
-    final Map<String, Json> empty = {};
-    _raw = empty;
+    _raw = <String, Json>{};
   }
 
   Json.list() {
@@ -85,10 +82,10 @@ class Json {
   Json.parse(String value) : this(jsonDecode(value));
 
   String asString() {
-    return asPrettyString(null);
+    return asPrettyString(indent: null);
   }
 
-  String asPrettyString([String indent = '  ']) {
+  String asPrettyString({String? indent = "  "}) {
     final encoder = JsonEncoder.withIndent(indent, (value) {
       if (value is Json) {
         return value._raw;
@@ -104,18 +101,10 @@ class Json {
 
   bool get isExist => _raw != null;
 
-  // Dynamic
-
-  // ignore: unnecessary_getters_setters
-  dynamic get dynamicValue => _raw;
-
-  // ignore: unnecessary_getters_setters
-  set dynamicValue(dynamic value) => _raw = value;
-
   // Num
 
-  num get numValue {
-    if ((_raw is num) || (_raw == null)) {
+  num? get numValue {
+    if (_raw is num || _raw == null) {
       return _raw;
     } else {
       throw JsonException(
@@ -124,12 +113,12 @@ class Json {
     }
   }
 
-  set numValue(num value) => _raw = value;
+  set numValue(num? value) => _raw = value;
 
   // Int
 
-  int get intValue {
-    if ((_raw is int) || (_raw == null)) {
+  int? get intValue {
+    if (_raw is int || _raw == null) {
       return _raw;
     } else {
       throw JsonException(
@@ -138,12 +127,12 @@ class Json {
     }
   }
 
-  set intValue(int value) => _raw = value;
+  set intValue(int? value) => _raw = value;
 
   // Double
 
-  double get doubleValue {
-    if ((_raw is double) || (_raw == null)) {
+  double? get doubleValue {
+    if (_raw is double || _raw == null) {
       return _raw;
     } else {
       throw JsonException(
@@ -152,12 +141,12 @@ class Json {
     }
   }
 
-  set doubleValue(double value) => _raw = value;
+  set doubleValue(double? value) => _raw = value;
 
   // String
 
-  String get stringValue {
-    if ((_raw is String) || (_raw == null)) {
+  String? get stringValue {
+    if (_raw is String || _raw == null) {
       return _raw;
     } else {
       throw JsonException(
@@ -166,12 +155,12 @@ class Json {
     }
   }
 
-  set stringValue(String value) => _raw = value;
+  set stringValue(String? value) => _raw = value;
 
   // Bool
 
-  bool get boolValue {
-    if ((_raw is bool) || (_raw == null)) {
+  bool? get boolValue {
+    if (_raw is bool || _raw == null) {
       return _raw;
     } else {
       throw JsonException(
@@ -180,7 +169,7 @@ class Json {
     }
   }
 
-  set boolValue(bool value) => _raw = value;
+  set boolValue(bool? value) => _raw = value;
 
   // Map
 
@@ -198,12 +187,12 @@ class Json {
     Map<String, Json> map = _raw;
 
     if (map.containsKey(key)) {
-      map[key]._keyPath = "$_keyPath/$key";
-      return map[key];
+      map[key]!._keyPath = "$_keyPath/$key";
+      return map[key]!;
     } else {
       map[key] = Json.empty();
-      map[key]._keyPath = "$_keyPath/$key";
-      return map[key];
+      map[key]!._keyPath = "$_keyPath/$key";
+      return map[key]!;
     }
   }
 
@@ -216,7 +205,7 @@ class Json {
 
     Map<String, Json> map = _raw;
     map[key] = value;
-    map[key]._keyPath = "$_keyPath/$key";
+    map[key]!._keyPath = "$_keyPath/$key";
   }
 
   // List
@@ -229,24 +218,23 @@ class Json {
     }
 
     List<Json> list = _raw;
-
     for (var i = 0; i < list.length; i++) {
       list[i]._keyPath = "$_keyPath/$i";
     }
-
     return list;
   }
 
   // Custom
 
-  T get<T>(JsonAdapter<T> adapter) => adapter.fromJson(this);
+  T? get<T>(JsonAdapter<T> adapter) => adapter.fromJson(this);
 
-  void set<T>(T value, JsonAdapter<T> adapter) =>
-      _raw = adapter.toJson(value)?._raw;
+  void set<T>(T? value, JsonAdapter<T> adapter) {
+    _raw = adapter.toJson(value)._raw;
+  }
 
   // Convenience
 
-  static Json fromObjectList<T>(List<T> list, Json Function(T item) builder) {
+  static Json fromObjectList<T>(List<T>? list, Json Function(T item) builder) {
     if (list == null) {
       return Json.empty();
     }
@@ -258,7 +246,7 @@ class Json {
     return listJson;
   }
 
-  List<T> toObjectList<T>(T Function(Json j) builder) {
+  List<T>? toObjectList<T>(T Function(Json j) builder) {
     if (_raw == null) {
       return null;
     }
