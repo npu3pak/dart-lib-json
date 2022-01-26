@@ -13,8 +13,8 @@ abstract class JsonAdapter<T> {
 class JsonException implements Exception {
   JsonException(this._message, [this._cause]);
 
-  String _message;
-  Exception _cause;
+  final String _message;
+  final Exception _cause;
 
   @override
   String toString() {
@@ -35,20 +35,20 @@ class Json {
 
   Json(raw) {
     if (_isSupportedValueType(raw)) {
-      this._raw = raw;
+      _raw = raw;
     } else if (raw is Json) {
-      this._raw = raw._raw;
+      _raw = raw._raw;
     } else if (raw is Map<String, dynamic>) {
       final Map<String, dynamic> map = raw;
-      this._raw = map.map((k, v) => MapEntry(k, Json(v)));
+      _raw = map.map((k, v) => MapEntry(k, Json(v)));
     } else if (raw is List<Json>) {
-      this._raw = raw;
+      _raw = raw;
     } else if (raw is List<dynamic>) {
       final List<dynamic> list = raw;
-      this._raw = list.map((v) => Json(v)).toList();
+      _raw = list.map((v) => Json(v)).toList();
     } else if (raw is Iterable<dynamic>) {
       final Iterable<dynamic> iterable = raw;
-      this._raw = iterable.map((v) => Json(v)).toList();
+      _raw = iterable.map((v) => Json(v)).toList();
     } else {
       throw JsonException(
         "Can not create a JSON with type ${raw.runtimeType}.",
@@ -78,7 +78,7 @@ class Json {
 
   // Key path
 
-  String get keyPath => _keyPath.length == 0 ? "/" : _keyPath;
+  String get keyPath => _keyPath.isEmpty ? "/" : _keyPath;
 
   // Serialization and deserialization
 
@@ -259,9 +259,9 @@ class Json {
   }
 
   List<T> toObjectList<T>(T Function(Json j) builder) {
-    if (this._raw == null) {
+    if (_raw == null) {
       return null;
     }
-    return this.list.map((j) => builder(j)).toList();
+    return list.map((j) => builder(j)).toList();
   }
 }
