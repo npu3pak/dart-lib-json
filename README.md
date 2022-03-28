@@ -186,28 +186,17 @@ List<Book>? objectList = listJson.toObjectList(
 ```
 
 ### Working with custom types
+Sometimes you need to work with enums, dates and other custom types in JSON.
+```dart
+enum Status { active, old }
+```
+
 You must implement a JsonAdapter to parse values of a custom type.
 
 ```dart
-final jsonStr = """
-{
-  "name": "John",
-  "status": "active"
-}
-""";
-
-class User {
-  final String name;
-  final Status status;
-
-  User({this.name, this.status});
-}
-
-enum Status { active, old }
-
 class StatusAdapter implements JsonAdapter<Status> {
   @override
-  Status fromJson(Json json) {
+  Status? fromJson(Json json) {
     switch (json.stringValue) {
       case "active":
         return Status.active;
@@ -219,7 +208,10 @@ class StatusAdapter implements JsonAdapter<Status> {
   }
 
   @override
-  Json toJson(Status value) {
+  Json toJson(Status? value) {
+    if (value == null) {
+      return Json.empty();
+    }
     switch (value) {
       case Status.active:
         return Json("active");
@@ -230,14 +222,17 @@ class StatusAdapter implements JsonAdapter<Status> {
     }
   }
 }
+```
 
-main() {
-  final json = Json.parse(jsonStr);
-  final user = User(
-    name: json["name"].stringValue,
-    status: json["status"].get(StatusAdapter())
-  );
-}
+Now you can to work with JSON values of the custom type using the **get** and **set** methods.
+```dart
+final valueJson = Json.empty();
+valueJson.set(Status.active, StatusAdapter());
+Status? valueStatus = valueJson.get(StatusAdapter());
+
+final objectJson = Json.object();
+objectJson["key"].set(Status.active, StatusAdapter());
+Status? ojectStatus = objectJson["key"].get(StatusAdapter());
 ```
 
 ## Authors
