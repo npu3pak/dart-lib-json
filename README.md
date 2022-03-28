@@ -186,12 +186,12 @@ List<Book>? objectList = listJson.toObjectList(
 ```
 
 ### Working with custom types
-Sometimes you need to work with enums, dates and other custom types in JSON.
+Sometimes you need to work with enums, dates, and other custom types in JSON.
 ```dart
 enum Status { active, old }
 ```
 
-You must implement a JsonAdapter to parse values of a custom type.
+You can implement a JsonAdapter to parse values of a custom type.
 
 ```dart
 class StatusAdapter implements JsonAdapter<Status> {
@@ -224,7 +224,7 @@ class StatusAdapter implements JsonAdapter<Status> {
 }
 ```
 
-Now you can to work with JSON values of the custom type using the **get** and **set** methods.
+Now you can work with JSON values of the custom type using the **get** and **set** methods.
 ```dart
 final valueJson = Json.empty();
 valueJson.set(Status.active, StatusAdapter());
