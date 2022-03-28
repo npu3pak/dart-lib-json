@@ -25,10 +25,7 @@ import 'package:dart_json/dart_json.dart';
 
 ### String parsing
 ```dart
-final str = """
-{"title": "Roadside Picnic", "year": 1972, "inStock": false }
-""";
-
+final str = '{"title": "Roadside Picnic", "year": 1972, "inStock": false}';
 final json = Json.parse(str);
 ```
 
@@ -59,57 +56,17 @@ Json json = Json.object();
 json["int"].intValue = 1;
 json["string"].stringValue = "str";
 json["double"].doubleValue = 1.1;
+json["double"].numValue = 1.1;
 json["bool"].boolValue = true;
-```
-
-The same using dynamic types:
-```dart
-Json json = Json.object();
-json["int"].dynamicValue = 1;
-json["string"].dynamicValue = "str";
-json["double"].dynamicValue = 1.1;
-json["bool"].dynamicValue = true;
 ```
 
 ### Reading values
 ```dart
-final intVal = json["year"].intValue;
-final stringVal = json["title"].stringValue;
-final doubleVal = json["price"].doubleValue;
-final boolVal = json["inStock"].boolValue;
-```
-
-With dynamic types:
-```dart
-final intVal = json["year"].dynamicValue;
-final stringVal = json["title"].dynamicValue;
-final doubleVal = json["price"].dynamicValue;
-final boolVal = json["inStock"].dynamicValue;
-```
-
-### Checking if a value exists
-You can check if the JSON contains the element with the giving name:
-```dart
-if (item["element"].dynamicValue != null) {
-
-}
-```
-Example:
-
-```dart
-final json = Json([
-  {"name": "John"},
-  {
-    "name": "Nick",
-    "extra": {"phone": "123-4567"}
-  }
-]);
-
-for (var item in json.list) {
-  if (item["extra"].dynamicValue != null) {
-    print(item["name"].stringValue);
-  }
-}
+int? intVal = json["year"].intValue;
+String? stringVal = json["title"].stringValue;
+double? doubleVal = json["price"].doubleValue;
+num? numValue = json["price"].numValue;
+bool? boolVal = json["inStock"].boolValue;
 ```
 
 ### Making JSON objects
@@ -142,22 +99,28 @@ final value1 = j["inner1"]["key1"].stringValue;
 final value2 = j["inner1"]["inner2"]["key2"].stringValue;
 ```
 
-### Working with a JSON list
-You can create a JSON list from a list of JSON objects:
-
+### Null checks
+You can check if the JSON value is **not null**:
 ```dart
-final item1 = Json({"name": "John"});
-final item2 = Json({"name": "Nick"});
-final json = Json([item1, item2]);
+final json = Json.empty(); // json with null
+print(json != null) // true
+print(json.isExist) // false
 ```
 
-You can create a JSON list from a list of dictionaries:
+You can check if the JSON object contains the element with the giving name:
+```dart
+final json = Json.object(); // json with {}
+print(json.isExist) // true
+print(json["key"].isExist) // false
+```
+
+### Working with a JSON list
+You can create a JSON list:
 
 ```dart
-final json = Json([
-    {"name": "John"},
-    {"name": "Nick"},
-]);
+final fromAListOfValues = Json(["John", "Jack"]);
+final fromAListOfDictionaries = Json({"name": "John"}, {"name": "Nick"}]);
+final fromAListOfJsons = Json([Json("John"), Json("Jack")]);
 ```
 
 You can access a list of a JSON object with the **list** property.
@@ -169,11 +132,9 @@ List<Json> jsonList = json.list;
 You can create an empty array and fill it with items using the **add()** method:
 
 ```dart
-final item1 = Json({"item": 1});
-final item2 = Json({"item": 2});
 final json = Json.list(); // []
-json.list.add(item1); // [{"item":1}]
-json.list.add(item2); // [{"item":2}]
+json.list.add(Json({"item": 1})); // [{"item":1}]
+json.list.add(Json({"item": 2})); // [{"item":1}, {"item":2}]
 ```
 
 You can modify a list of items like this:
@@ -181,22 +142,14 @@ You can modify a list of items like this:
 ```dart
 final item1 = Json({"item": 1});
 final item2 = Json({"item": 2});
+
 final json = Json([item1]); // [{"item":1}]
 json.list.remove(item1); // []
 json.list.add(item2); // [{"item":2}]
 ```
 
-### Parsing a response string
+### Working with an objects list
 ```dart
-final responseString = """
-{
-  "books": [
-    {"title": "Hard to Be a God", "year": 1964, "inStock": true, "price": 5.99 },
-    {"title": "Prisoners of Power", "year": 1971, "inStock": true, "price": 5.99 },
-    {"title": "Roadside Picnic", "year": 1972, "inStock": false }
-  ]
-}
-""";
 
 class Book {
   final String title;
@@ -207,49 +160,12 @@ class Book {
   Book({this.title, this.year, this.inStock, this.price});
 }
 
-main() {
-  Json json = Json.parse(responseString);
-
-  List<Book> books = json["books"].list.map(
-      (j) => Book(
-        title: j["title"].stringValue,
-        year: j["year"].intValue,
-        inStock: j["inStock"].boolValue,
-        price: j["price"].doubleValue,
-      ),
-    ).toList();
-  }
-
-  // You can also use the convenience **toObjectList()** method
-   books = json["books"].toObjectList(
-        (j) => Book(
-          title: j["title"].stringValue,
-          year: j["year"].intValue,
-          inStock: j["inStock"].boolValue,
-          price: j["price"].doubleValue,
-        ),
-      );
-```
-### Making JSON from an objects list
-```dart
 final books = [
   Book(title: "Beetle in the Anthill", year: 1979, inStock: true, price: 5.99)
 ];
 
-Json listJson = Json.list();
-for (final book in books) {
-  var itemJson = Json.object();
-  itemJson["title"].stringValue = book.title;
-  itemJson["year"].intValue = book.year;
-  itemJson["inStock"].boolValue = book.inStock;
-  itemJson["price"].doubleValue = book.price;
-  listJson.list.add(itemJson);
-}
-
-print(listJson.asPrettyString());
-
-// You can use the convenience **Json.fromObjectList** method as well
-listJson = Json.fromObjectList(books, (item) {
+// Making the JSON from the object list
+Json listJson = Json.fromObjectList(books, (Book item) {
   var j = Json.object();
   j["title"].stringValue = item.title;
   j["year"].intValue = item.year;
@@ -257,9 +173,19 @@ listJson = Json.fromObjectList(books, (item) {
   j["price"].doubleValue = item.price;
   return j;
 });
+
+// Making the object list from the JSON
+List<Book>? objectList = listJson.toObjectList(
+  (j) => Book(
+    title: j["title"].stringValue!,
+    year: j["year"].intValue!,
+    inStock: j["inStock"].boolValue!,
+    price: j["price"].doubleValue!,
+  ),
+);
 ```
 
-### Parsing custom types
+### Working with custom types
 You must implement a JsonAdapter to parse values of a custom type.
 
 ```dart

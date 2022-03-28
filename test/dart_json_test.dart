@@ -111,6 +111,24 @@ void main() {
     });
   });
 
+  group("null checks", () {
+    test('init with null', () {
+      final j = Json.empty();
+
+      expect(j.isExist, false);
+    });
+
+    test('init empty object', () {
+      final j = Json.object();
+
+      expect(j.isExist, true);
+      expect(j["key"].isExist, false);
+
+      j["key"].stringValue = "value";
+      expect(j["key"].isExist, true);
+    });
+  });
+
   group('key path', () {
     test('key path', () {
       final j = Json({
@@ -415,7 +433,21 @@ void main() {
       expect(list[1]["name"].stringValue, equals("Jack"));
     });
 
-    test('set list', () {
+    test('set simple list', () {
+      final json = Json([Json("John"), Json("Jack")]);
+
+      expect(json.list[0].stringValue, "John");
+      expect(json.list[1].stringValue, "Jack");
+    });
+
+    test('set simple values list', () {
+      final json = Json(["John", "Jack"]);
+
+      expect(json.list[0].stringValue, "John");
+      expect(json.list[1].stringValue, "Jack");
+    });
+
+    test('set object list', () {
       final item1 = Json({"name": "John"});
       final item2 = Json({"name": "Jack"});
       final json = Json.object();
