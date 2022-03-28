@@ -93,11 +93,28 @@ json["contacts"]["phones"] = Json.list();
 json["contacts"]["phones"].list.add(Json("754-3010"));
 ```
 
-### Accessing values from a nested object
+### Accessing values of a nested object
 ```dart
-final value1 = j["inner1"]["key1"].stringValue;
-final value2 = j["inner1"]["inner2"]["key2"].stringValue;
+final value = j["root"]["nested"].stringValue;
 ```
+
+In the example above the keys "root" and "nested" **must not be null**, otherwise the JsonException will be thrown.
+If you need to parse the nested JSON with keys that can be null, you should check it explicitly.
+
+```dart
+final value1 = j["nullableKey"].optional["nested"].stringValue; // JsonException
+
+final value2 = j["nullableKey"].isExist 
+  ? j["nullableKey"]["nested"].stringValue 
+  : null; // null
+```
+
+You can also use the shortcut.
+```dart
+final value = j["nullableKey"].optional["nested"].stringValue; // null
+```
+
+In the example, we marked the path "nullableKey" as **optional**. The JSON parser will know that the "nullableKey" can be null. And the "nested" and all the keys to the right side of "nullableKey" can be null as well.
 
 ### Null checks
 You can check if the JSON value is **not null**:
