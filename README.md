@@ -119,7 +119,7 @@ You can create a JSON list:
 
 ```dart
 final fromAListOfValues = Json(["John", "Jack"]);
-final fromAListOfDictionaries = Json({"name": "John"}, {"name": "Nick"}]);
+final fromAListOfDictionaries = Json([{"name": "John"}, {"name": "Nick"}]);
 final fromAListOfJsons = Json([Json("John"), Json("Jack")]);
 ```
 
