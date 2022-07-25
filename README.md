@@ -131,6 +131,19 @@ print(json.isExist) // true
 print(json["key"].isExist) // false
 ```
 
+### Type checks
+You can check the runtime type of the JSON value:
+```dart
+Json("value").isOf<String>; // true
+Json("value").isNotOf<int>; // true
+```
+
+You can also check the type of the "dynamicValue" property:
+```dart
+Json("value").dynamicValue is String; // true
+Json("value").dynamicValue is int; // false
+```
+
 ### Working with a JSON list
 You can create a JSON list:
 

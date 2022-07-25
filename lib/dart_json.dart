@@ -122,6 +122,24 @@ class Json {
 
   bool get isExist => _raw != null;
 
+  // Type check
+
+  bool isOf<T>() {
+    return _raw is T;
+  }
+
+  bool isNotOf<T>() {
+    return _raw is! T;
+  }
+
+  // Dynamic
+
+  // ignore: unnecessary_getters_setters
+  dynamic get dynamicValue => _raw;
+
+  // ignore: unnecessary_getters_setters
+  set dynamicValue(dynamic value) => _raw = value;
+
   // Num
 
   num? get numValue {
