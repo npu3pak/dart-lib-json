@@ -26,7 +26,11 @@ import 'package:dart_json/dart_json.dart';
 ### String parsing
 ```dart
 final str = '{"title": "Roadside Picnic", "year": 1972, "inStock": false}';
-final json = Json.parse(str);
+try {
+  final json = Json.parse(str);
+} on JsonException catch (e) {
+  print(e)
+}
 ```
 
 ### Converting JSON to string
@@ -61,13 +65,38 @@ json["bool"].boolValue = true;
 ```
 
 ### Reading values
+The nullable values can be read like this:
 ```dart
-int? intVal = json["year"].intValue;
-String? stringVal = json["title"].stringValue;
-double? doubleVal = json["price"].doubleValue;
-num? numValue = json["price"].numValue;
-bool? boolVal = json["inStock"].boolValue;
+try {
+  int? intVal = json["year"].intValue;
+  String? stringVal = json["title"].stringValue;
+  double? doubleVal = json["price"].doubleValue;
+  num? numValue = json["price"].numValue;
+  bool? boolVal = json["inStock"].boolValue;
+} on JsonValueException catch (e) {
+  print(e.keypath) // the/path/to/field
+  print(e.value) // The value of the faulty field
+  print(e) // "Unable to parse the value at the/path/to/field"...
+}
 ```
+In this case, the JsonValueException will be thrown if the type of the value is incorrect. The null value is permitted.
+
+### Required values
+If the value must not be null, you can use the \*OrException properties:
+```dart
+try {
+  int intVal = json["year"].intOrException;
+  String stringVal = json["title"].stringOrException;
+  double doubleVal = json["price"].doubleOrException;
+  num numValue = json["price"].numOrException;
+  bool boolVal = json["inStock"].boolOrException;
+} on JsonValueException catch (e) {
+  print(e.keypath) // the/path/to/field
+  print(e.value) // The value of the faulty field
+  print(e) // "Unable to parse the required value at the/path/to/field"...
+}
+```
+In this case, the JsonValueException will be thrown if the type of the value is incorrect or the value is null.
 
 ### Making JSON objects
 From a dictionary:

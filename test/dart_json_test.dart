@@ -314,12 +314,17 @@ void main() {
       final json = Json.parse("1");
 
       expect(json.numValue, equals(1));
+      expect(json.numOrException, equals(1));
     });
 
     test('.parse null', () {
       final json = Json.parse("null");
 
       expect(json.numValue, isNull);
+      expect(
+        () => json.numOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
 
     test('assigned int value', () {
@@ -327,6 +332,7 @@ void main() {
       json.numValue = 2;
 
       expect(json.numValue, equals(2));
+      expect(json.numOrException, equals(2));
     });
 
     test('assigned double value', () {
@@ -334,6 +340,7 @@ void main() {
       json.numValue = 2.2;
 
       expect(json.numValue, equals(2.2));
+      expect(json.numOrException, equals(2.2));
     });
 
     test('assigned null', () {
@@ -341,6 +348,10 @@ void main() {
       json.numValue = null;
 
       expect(json.numValue, isNull);
+      expect(
+        () => json.numOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
@@ -349,12 +360,17 @@ void main() {
       final json = Json.parse("1");
 
       expect(json.intValue, equals(1));
+      expect(json.intOrException, equals(1));
     });
 
     test('.parse null', () {
       final json = Json.parse("null");
 
       expect(json.intValue, isNull);
+      expect(
+        () => json.intOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
 
     test('assigned value', () {
@@ -362,6 +378,7 @@ void main() {
       json.intValue = 2;
 
       expect(json.intValue, equals(2));
+      expect(json.intOrException, equals(2));
     });
 
     test('assigned null', () {
@@ -369,6 +386,10 @@ void main() {
       json.intValue = null;
 
       expect(json.intValue, isNull);
+      expect(
+        () => json.intOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
@@ -377,12 +398,17 @@ void main() {
       final json = Json.parse("1.0");
 
       expect(json.doubleValue, equals(1.0));
+      expect(json.doubleOrException, equals(1.0));
     });
 
     test('.parse null', () {
       final json = Json.parse("null");
 
       expect(json.doubleValue, isNull);
+      expect(
+        () => json.doubleOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
 
     test('assigned double value', () {
@@ -390,6 +416,7 @@ void main() {
       json.doubleValue = 2.0;
 
       expect(json.doubleValue, equals(2.0));
+      expect(json.doubleOrException, equals(2.0));
     });
 
     test('assigned int value', () {
@@ -397,6 +424,7 @@ void main() {
       json.doubleValue = 2;
 
       expect(json.doubleValue, equals(2.0));
+      expect(json.doubleOrException, equals(2.0));
     });
 
     test('assigned null', () {
@@ -404,6 +432,10 @@ void main() {
       json.doubleValue = null;
 
       expect(json.doubleValue, isNull);
+      expect(
+        () => json.intOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
@@ -412,12 +444,17 @@ void main() {
       final json = Json.parse('"Str"');
 
       expect(json.stringValue, 'Str');
+      expect(json.stringOrException, equals('Str'));
     });
 
     test('.parse null', () {
       final json = Json.parse("null");
 
       expect(json.stringValue, isNull);
+      expect(
+        () => json.stringOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
 
     test('.assigned value', () {
@@ -425,6 +462,7 @@ void main() {
       json["strKey"].stringValue = 'Str';
 
       expect(json["strKey"].stringValue, 'Str');
+      expect(json["strKey"].stringOrException, equals('Str'));
     });
 
     test('.assigned null', () {
@@ -432,6 +470,10 @@ void main() {
       json["strKey"].stringValue = null;
 
       expect(json["strKey"].stringValue, isNull);
+      expect(
+        () => json["strKey"].stringOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
@@ -440,12 +482,17 @@ void main() {
       final json = Json.parse("true");
 
       expect(json.boolValue, equals(true));
+      expect(json.boolOrException, equals(true));
     });
 
     test('.parse null', () {
       final json = Json.parse("null");
 
       expect(json.boolValue, isNull);
+      expect(
+        () => json.boolOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
 
     test('.assigned value', () {
@@ -455,6 +502,8 @@ void main() {
 
       expect(json["boolTrueKey"].boolValue, equals(true));
       expect(json["boolFalseKey"].boolValue, equals(false));
+      expect(json["boolTrueKey"].boolOrException, equals(true));
+      expect(json["boolFalseKey"].boolOrException, equals(false));
     });
 
     test('.assigned null', () {
@@ -462,6 +511,10 @@ void main() {
       json["boolKey"].boolValue = null;
 
       expect(json["boolKey"].boolValue, isNull);
+      expect(
+        () => json["boolKey"].boolOrException,
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
