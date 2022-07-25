@@ -80,7 +80,15 @@ class Json {
 
   // Serialization and deserialization
 
-  Json.parse(String value) : this(jsonDecode(value));
+  Json.parse(String value) : this(_parse(value));
+
+  static dynamic _parse(String value) {
+    try {
+      return jsonDecode(value);
+    } on Exception catch (e) {
+      throw JsonException("Unable to parse JSON.", e);
+    }
+  }
 
   String asString() {
     return asPrettyString(indent: null);
