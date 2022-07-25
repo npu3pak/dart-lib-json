@@ -214,7 +214,7 @@ class Json {
 
   // Int
 
-  num get intOrException {
+  int get intOrException {
     if (_raw is int) {
       return _raw;
     } else {
