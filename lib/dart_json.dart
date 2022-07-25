@@ -24,6 +24,45 @@ class JsonException implements Exception {
   }
 }
 
+class JsonValueException extends JsonException {
+  final String keyPath;
+
+  /// The actual value of the JSON field. It is not exposed via the toString() method.
+  final dynamic value;
+
+  JsonValueException({
+    required this.keyPath,
+    required this.value,
+    required String message,
+    Exception? cause,
+  }) : super(message, cause);
+
+  JsonValueException._required({
+    required String typeName,
+    required this.keyPath,
+    required this.value,
+  }) : super(
+          """Unable to parse the required value at [$keyPath]. The internal value of JSON must be $typeName, but it's ${value == null ? "null" : value.runtimeType}.""",
+        );
+
+  JsonValueException._nullable({
+    required String typeName,
+    required this.keyPath,
+    required this.value,
+  }) : super(
+          """Unable to parse the value at [$keyPath]. The internal value of JSON must be $typeName, but it's ${value.runtimeType}.""",
+        );
+
+  JsonValueException._set({
+    required String typeName,
+    required String key,
+    required this.keyPath,
+    required this.value,
+  }) : super(
+          """Unable to set a value with "$key" key. The JSON at [$keyPath] path must be $typeName, but it's ${value.runtimeType}.""",
+        );
+}
+
 class Json {
   // Can be a null, a simple value, a List<Json>, or a Map<String, Json>.
   dynamic _raw;
@@ -150,12 +189,26 @@ class Json {
 
   // Num
 
+  num get numOrException {
+    if (_raw is num) {
+      return _raw;
+    } else {
+      throw JsonValueException._required(
+        typeName: "a num",
+        keyPath: _keyPath,
+        value: _raw,
+      );
+    }
+  }
+
   num? get numValue {
     if (_raw is num || _raw == null) {
       return _raw;
     } else {
-      throw JsonException(
-        "Unable access a value at [$_keyPath]. The internal value of JSON must be a num, but it's ${_raw.runtimeType}.",
+      throw JsonValueException._nullable(
+        typeName: "a num",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
   }
@@ -164,12 +217,26 @@ class Json {
 
   // Int
 
+  num get intOrException {
+    if (_raw is int) {
+      return _raw;
+    } else {
+      throw JsonValueException._required(
+        typeName: "an int",
+        keyPath: _keyPath,
+        value: _raw,
+      );
+    }
+  }
+
   int? get intValue {
     if (_raw is int || _raw == null) {
       return _raw;
     } else {
-      throw JsonException(
-        "Unable access a value at [$_keyPath]. The internal value of JSON must be a int, but it's ${_raw.runtimeType}.",
+      throw JsonValueException._nullable(
+        typeName: "an int",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
   }
@@ -178,12 +245,26 @@ class Json {
 
   // Double
 
+  double get doubleOrException {
+    if (_raw is double) {
+      return _raw;
+    } else {
+      throw JsonValueException._required(
+        typeName: "a double",
+        keyPath: _keyPath,
+        value: _raw,
+      );
+    }
+  }
+
   double? get doubleValue {
     if (_raw is double || _raw == null) {
       return _raw;
     } else {
-      throw JsonException(
-        "Unable access a value at [$_keyPath]. The internal value of JSON must be a double, but it's ${_raw.runtimeType}.",
+      throw JsonValueException._nullable(
+        typeName: "a double",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
   }
@@ -192,12 +273,26 @@ class Json {
 
   // String
 
+  String get stringOrException {
+    if (_raw is String) {
+      return _raw;
+    } else {
+      throw JsonValueException._required(
+        typeName: "a String",
+        keyPath: _keyPath,
+        value: _raw,
+      );
+    }
+  }
+
   String? get stringValue {
     if (_raw is String || _raw == null) {
       return _raw;
     } else {
-      throw JsonException(
-        "Unable access a value at [$_keyPath]. The internal value of JSON must be a string, but it's ${_raw.runtimeType}.",
+      throw JsonValueException._nullable(
+        typeName: "a String",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
   }
@@ -206,12 +301,26 @@ class Json {
 
   // Bool
 
+  bool get boolOrException {
+    if (_raw is bool) {
+      return _raw;
+    } else {
+      throw JsonValueException._required(
+        typeName: "a bool",
+        keyPath: _keyPath,
+        value: _raw,
+      );
+    }
+  }
+
   bool? get boolValue {
     if (_raw is bool || _raw == null) {
       return _raw;
     } else {
-      throw JsonException(
-        "Unable access a value at [$_keyPath]. The internal value of JSON must be a bool, but it's ${_raw.runtimeType}.",
+      throw JsonValueException._nullable(
+        typeName: "a bool",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
   }
@@ -232,9 +341,11 @@ class Json {
       return json;
     }
 
-    if (_raw is Map<String, Json> == false) {
-      throw JsonException(
-        """Unable to access a value with "$key" key. The JSON at [$keyPath] path must be an Object with Map<String, Json> internal value type, but it's ${_raw.runtimeType}.""",
+    if (_raw is! Map<String, Json>) {
+      throw JsonValueException._nullable(
+        typeName: "a Map<String, Json>",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
 
@@ -253,9 +364,12 @@ class Json {
   }
 
   void operator []=(String key, Json value) {
-    if (_raw is Map<String, Json> == false) {
-      throw JsonException(
-        """Unable to set a value with "$key" key. The JSON at [$_keyPath] path must be an Object with Map<String, Json> internal type, but it's ${_raw.runtimeType}.""",
+    if (_raw is! Map<String, Json>) {
+      throw JsonValueException._set(
+        typeName: "an Object with Map<String, Json> internal type",
+        key: key,
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
 
@@ -268,9 +382,11 @@ class Json {
   // List
 
   List<Json> get list {
-    if (_raw is List<Json> == false) {
-      throw JsonException(
-        """Unable to cast the JSON value at [$_keyPath] to a list. The JSON must be an Array type with List<Json> internal type, but it's ${_raw.runtimeType}.""",
+    if (_raw is! List<Json>) {
+      throw JsonValueException._nullable(
+        typeName: "an Array type with List<Json> internal type",
+        keyPath: _keyPath,
+        value: _raw,
       );
     }
 
