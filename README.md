@@ -74,7 +74,6 @@ try {
   num? numValue = json["price"].numValue;
   bool? boolVal = json["inStock"].boolValue;
 } on JsonValueException catch (e) {
-  print(e.keypath) // the/path/to/field
   print(e.value) // The value of the faulty field
   print(e) // "Unable to parse the value at the/path/to/field"...
 }
@@ -91,7 +90,6 @@ try {
   num numValue = json["price"].numOrException;
   bool boolVal = json["inStock"].boolOrException;
 } on JsonValueException catch (e) {
-  print(e.keypath) // the/path/to/field
   print(e.value) // The value of the faulty field
   print(e) // "Unable to parse the required value at the/path/to/field"...
 }

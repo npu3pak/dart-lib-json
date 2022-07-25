@@ -25,13 +25,10 @@ class JsonException implements Exception {
 }
 
 class JsonValueException extends JsonException {
-  final String keyPath;
-
   /// The actual value of the JSON field. It is not exposed via the toString() method.
   final dynamic value;
 
   JsonValueException({
-    required this.keyPath,
     required this.value,
     required String message,
     Exception? cause,
@@ -39,7 +36,7 @@ class JsonValueException extends JsonException {
 
   JsonValueException._required({
     required String typeName,
-    required this.keyPath,
+    required String keyPath,
     required this.value,
   }) : super(
           """Unable to parse the required value at [$keyPath]. The internal value of JSON must be $typeName, but it's ${value == null ? "null" : value.runtimeType}.""",
@@ -47,7 +44,7 @@ class JsonValueException extends JsonException {
 
   JsonValueException._nullable({
     required String typeName,
-    required this.keyPath,
+    required String keyPath,
     required this.value,
   }) : super(
           """Unable to parse the value at [$keyPath]. The internal value of JSON must be $typeName, but it's ${value.runtimeType}.""",
@@ -56,7 +53,7 @@ class JsonValueException extends JsonException {
   JsonValueException._set({
     required String typeName,
     required String key,
-    required this.keyPath,
+    required String keyPath,
     required this.value,
   }) : super(
           """Unable to set a value with "$key" key. The JSON at [$keyPath] path must be $typeName, but it's ${value.runtimeType}.""",
