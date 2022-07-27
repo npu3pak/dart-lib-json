@@ -292,6 +292,23 @@ objectJson["key"].set(Status.active, StatusAdapter());
 Status? ojectStatus = objectJson["key"].get(StatusAdapter());
 ```
 
+If the value must not be null, you can use the **getRequired** method.
+```dart
+final valueJson = Json.empty();
+valueJson.set(Status.active, StatusAdapter());
+Status valueStatus = valueJson.getRequired(StatusAdapter());
+
+```
+If the custom adapter returns null, the **getRequired** method will throw a JsonValueException.
+```dart
+try {
+  Json("incorrect").getRequired(StatusAdapter());
+} on JsonValueException catch (e) {
+  print(e.value) // The value of the faulty field
+  print(e) // "Unable to parse the required value at the/path/to/field"...
+}
+```
+
 ## Authors
 
 Evgeniy Safronov (evsafronov.personal@yandex.ru)

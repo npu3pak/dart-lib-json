@@ -672,12 +672,17 @@ void main() {
       final j = Json.object();
       j["gender"].stringValue = "M";
       expect(j["gender"].get(GenderAdapter()), Gender.male);
+      expect(j["gender"].getRequired(GenderAdapter()), Gender.male);
 
       j["gender"].set(Gender.female, GenderAdapter());
       expect(j["gender"].stringValue, "F");
 
       j["gender"].stringValue = "Unknown";
       expect(j["gender"].get(GenderAdapter()), null);
+      expect(
+        () => j["gender"].getRequired(GenderAdapter()),
+        throwsA(isA<JsonValueException>()),
+      );
     });
   });
 
