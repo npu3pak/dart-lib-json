@@ -168,11 +168,11 @@ class Json {
 
   // Type check
 
-  bool isOf<T>() {
+  bool isA<T>() {
     return _raw is T;
   }
 
-  bool isNotOf<T>() {
+  bool isNot<T>() {
     return _raw is! T;
   }
 
@@ -397,6 +397,19 @@ class Json {
   // Custom
 
   T? get<T>(JsonAdapter<T> adapter) => adapter.fromJson(this);
+
+  T getRequired<T>(JsonAdapter<T> adapter) {
+    final transformed = adapter.fromJson(this);
+    if (transformed != null) {
+      return transformed;
+    } else {
+      throw (JsonValueException._required(
+        typeName: "a custom adapter acceptable value",
+        keyPath: keyPath,
+        value: _raw,
+      ));
+    }
+  }
 
   void set<T>(T? value, JsonAdapter<T> adapter) {
     _raw = adapter.toJson(value)._raw;

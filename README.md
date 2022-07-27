@@ -161,8 +161,8 @@ print(json["key"].isExist) // false
 ### Type checks
 You can check the runtime type of the JSON value:
 ```dart
-Json("value").isOf<String>; // true
-Json("value").isNotOf<int>; // true
+Json("value").isA<String>; // true
+Json("value").isNot<int>; // true
 ```
 
 You can also check the type of the "dynamicValue" property:
@@ -290,6 +290,23 @@ Status? valueStatus = valueJson.get(StatusAdapter());
 final objectJson = Json.object();
 objectJson["key"].set(Status.active, StatusAdapter());
 Status? ojectStatus = objectJson["key"].get(StatusAdapter());
+```
+
+If the value must not be null, you can use the **getRequired** method.
+```dart
+final valueJson = Json.empty();
+valueJson.set(Status.active, StatusAdapter());
+Status valueStatus = valueJson.getRequired(StatusAdapter());
+
+```
+If the custom adapter returns null, the **getRequired** method will throw a JsonValueException.
+```dart
+try {
+  Json("incorrect").getRequired(StatusAdapter());
+} on JsonValueException catch (e) {
+  print(e.value) // The value of the faulty field
+  print(e) // "Unable to parse the required value at the/path/to/field"...
+}
 ```
 
 ## Authors
