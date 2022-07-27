@@ -161,8 +161,8 @@ print(json["key"].isExist) // false
 ### Type checks
 You can check the runtime type of the JSON value:
 ```dart
-Json("value").isOf<String>; // true
-Json("value").isNotOf<int>; // true
+Json("value").isA<String>; // true
+Json("value").isNot<int>; // true
 ```
 
 You can also check the type of the "dynamicValue" property:

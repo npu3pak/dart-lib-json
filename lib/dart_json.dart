@@ -168,11 +168,11 @@ class Json {
 
   // Type check
 
-  bool isOf<T>() {
+  bool isA<T>() {
     return _raw is T;
   }
 
-  bool isNotOf<T>() {
+  bool isNot<T>() {
     return _raw is! T;
   }
 

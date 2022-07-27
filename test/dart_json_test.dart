@@ -133,8 +133,8 @@ void main() {
     test('init with null', () {
       final j = Json.empty();
 
-      expect(j.isOf<String>(), false);
-      expect(j.isNotOf<String>(), true);
+      expect(j.isA<String>(), false);
+      expect(j.isNot<String>(), true);
       expect(j.dynamicValue is String, false);
     });
 
@@ -142,57 +142,57 @@ void main() {
       final j1 = Json.object();
       final j2 = Json({"1": 1});
 
-      expect(j1.isOf<Map>(), true);
-      expect(j1.isNotOf<Map>(), false);
+      expect(j1.isA<Map>(), true);
+      expect(j1.isNot<Map>(), false);
       expect(j1.dynamicValue is Map, true);
 
-      expect(j2.isOf<Map>(), true);
-      expect(j2.isNotOf<Map>(), false);
+      expect(j2.isA<Map>(), true);
+      expect(j2.isNot<Map>(), false);
 
-      expect(j2.isOf<Map<String, dynamic>>(), true);
-      expect(j2.isNotOf<Map<String, int>>(), true);
+      expect(j2.isA<Map<String, dynamic>>(), true);
+      expect(j2.isNot<Map<String, int>>(), true);
     });
 
     test('init with list', () {
       final j = Json.list();
 
-      expect(j.isOf<List>(), true);
-      expect(j.isNotOf<List>(), false);
+      expect(j.isA<List>(), true);
+      expect(j.isNot<List>(), false);
       expect(j.dynamicValue is List, true);
 
-      expect(j.isOf<List<dynamic>>(), true);
+      expect(j.isA<List<dynamic>>(), true);
     });
 
     test('init with String', () {
       final j = Json("value");
-      expect(j.isOf<String>(), true);
-      expect(j.isOf<int>(), false);
-      expect(j.isOf<double>(), false);
-      expect(j.isOf<num>(), false);
-      expect(j.isOf<bool>(), false);
+      expect(j.isA<String>(), true);
+      expect(j.isA<int>(), false);
+      expect(j.isA<double>(), false);
+      expect(j.isA<num>(), false);
+      expect(j.isA<bool>(), false);
 
-      expect(j.isNotOf<String>(), false);
-      expect(j.isNotOf<int>(), true);
-      expect(j.isNotOf<double>(), true);
-      expect(j.isNotOf<num>(), true);
-      expect(j.isNotOf<bool>(), true);
+      expect(j.isNot<String>(), false);
+      expect(j.isNot<int>(), true);
+      expect(j.isNot<double>(), true);
+      expect(j.isNot<num>(), true);
+      expect(j.isNot<bool>(), true);
 
       expect(j.dynamicValue is String, true);
     });
 
     test('init with Number', () {
       final j = Json(123);
-      expect(j.isOf<String>(), false);
-      expect(j.isOf<int>(), true);
-      expect(j.isOf<double>(), false);
-      expect(j.isOf<num>(), true);
-      expect(j.isOf<bool>(), false);
+      expect(j.isA<String>(), false);
+      expect(j.isA<int>(), true);
+      expect(j.isA<double>(), false);
+      expect(j.isA<num>(), true);
+      expect(j.isA<bool>(), false);
 
-      expect(j.isNotOf<String>(), true);
-      expect(j.isNotOf<int>(), false);
-      expect(j.isNotOf<double>(), true);
-      expect(j.isNotOf<num>(), false);
-      expect(j.isNotOf<bool>(), true);
+      expect(j.isNot<String>(), true);
+      expect(j.isNot<int>(), false);
+      expect(j.isNot<double>(), true);
+      expect(j.isNot<num>(), false);
+      expect(j.isNot<bool>(), true);
 
       expect(j.dynamicValue is int, true);
       expect(j.dynamicValue is num, true);
