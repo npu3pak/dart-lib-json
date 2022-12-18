@@ -14,7 +14,9 @@ Features:
 Add this to your package's pubspec.yaml file:
 ```yaml
 dependencies:
-  dart_json: ^2.0.1
+  dart_json:
+      git:
+        url: git://github.com/npu3pak/dart-lib-json.git
 ```
 
 Install dependencies:
