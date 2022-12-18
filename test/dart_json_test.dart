@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_json/dart_json.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('init', () {

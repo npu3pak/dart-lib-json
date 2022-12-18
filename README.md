@@ -1,14 +1,20 @@
-# dart_json
+# Dart JSON
 
-JSON wrapper
+A library intended to bring manual JSON serialization to the Dart projects of all scales.
+
+Features:
+- Human readable and maintainable API
+- Strict compile-time and runtime types checks
+- Nested objects parsing
+- Lists of objects parsing
+- Exceptions that include a JSON key path with an error
+- Sound null safety support
 
 ## Installing
 Add this to your package's pubspec.yaml file:
 ```yaml
 dependencies:
-  dart_json:
-      git:
-        url: git://github.com/npu3pak/dart-lib-json.git
+  dart_json: ^2.0.1
 ```
 
 Install dependencies:
@@ -311,10 +317,10 @@ try {
 
 ## Authors
 
-Evgeniy Safronov (evsafronov.personal@yandex.ru)
+Evgeniy Safronov (evsafronov.personal@gmail.com)
 
 Alexander Smetannikov (alexsmetdev@gmail.com)
 
 ## License
 
-dart_json is available under the MIT license. See the LICENSE file for more info.
+Dart JSON is available under the MIT license. See the LICENSE file for more info.
