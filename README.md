@@ -21,7 +21,7 @@ dependencies:
 
 Install dependencies:
 ```
-pub get
+dart pub get
 ```
 
 Import the library:
