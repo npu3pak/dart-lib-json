@@ -1,3 +1,6 @@
+# Warning
+This repository is obsolete. Please use https://github.com/npu3pak/typed_json instead.
+
 # Dart JSON
 
 A library intended to bring manual JSON serialization to the Dart projects of all scales.
